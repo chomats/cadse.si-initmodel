@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<fede-local-component last-modified="1124976757372" modified-reference="false" created="true" performed="false" status="0" read-only="false" modified="true" is-multiple="false" start-type="1"><id>Tool.Workspace.EnvMelusine.1</id><type>Tool</type><supported-roles>Role.Workspace.InitModel</supported-roles><proxy>fede.workspace.model.envMelusine.InitModel</proxy></fede-local-component>
