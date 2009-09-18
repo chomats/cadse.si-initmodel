@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="fede/workspace/tool/loadmodel/internal/model/castor/|fede/workspace/tool/loadmodel/internal/model/castor/descriptors/|fede/workspace/tool/loadmodel/internal/model/castor/types/|fede/workspace/tool/loadmodel/internal/model/castor/types/descriptors/|fede/workspace/tool/loadmodel/MigCadseg.java" kind="src" path="sources"/>
+	<classpathentry kind="con" path="fede.workspace.eclipse.java.item.dependencies"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>
