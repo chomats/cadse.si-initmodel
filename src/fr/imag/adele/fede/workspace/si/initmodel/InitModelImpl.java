@@ -822,6 +822,7 @@ public class InitModelImpl {
 		cxt.cacheItems.put(it.getId(), it);
 		String cstName = cit.getCstName();
 		if (cxt.loadclass && cstName != null) {
+			it.setCSTName(cstName);
 			cxt.values_to_field.put(cstName, it);
 		}	
 		
@@ -1118,6 +1119,7 @@ public class InitModelImpl {
 				it.addAttributeType(att);
 				String cstName = attType.getCstName();
 				if (cxt.loadclass && cstName != null && cstName.endsWith("_")) {
+					att.setCSTName(cstName);
 					cxt.values_to_field.put(cstName, att);
 				}
 			} catch (Throwable e) {
@@ -1135,6 +1137,7 @@ public class InitModelImpl {
 				it.addAttributeType(att);
 				String cstName = vt.getCstName();
 				if (cxt.loadclass && cstName != null && cstName.endsWith("_")) {
+					att.setCSTName(cstName);
 					cxt.values_to_field.put(cstName, att);
 				}
 			} catch (Throwable e) {
@@ -1794,6 +1797,7 @@ public class InitModelImpl {
 
 		String cstName = linkType.getCstName();
 		if (cxt.loadclass && cstName != null) {
+			lt.setCSTName(cstName);
 			cxt.values_to_field.put(cstName, lt);
 		}
 		if (Boolean.TRUE.equals(linkType.isIsNatif())) {
