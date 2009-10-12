@@ -1,0 +1,6 @@
+25-09-07-1458
+	remove all referance at workspace type
+:20/09/07
+	use castor 1.1.2.1 
+	change build.xml and use castor ant task
+	change schema (sequence -> all)

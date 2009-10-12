@@ -2,7 +2,7 @@
 <ipojo>
 	<component immediate="false" classname="fr.imag.adele.fede.workspace.si.initmodel.InitModel" factory="fr.imag.adele.fede.workspace.si.initmodel.InitModel" architecture="true">
 		<callback transition="validate" method="start"/>
-		<provides interface="fr.imag.adele.fede.workspace.as.initmodel.IInitModel"/>
+		<provides specification="fr.imag.adele.fede.workspace.as.initmodel.IInitModel"/>
 		<requires field="workspaceCU" optional="true" filter="(sam.domain.root=Workspace)"/>
 		<requires field="findModel" optional="false"/>
 		<requires field="loadFactories" optional="false"/>
