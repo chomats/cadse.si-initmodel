@@ -66,6 +66,7 @@ import fede.workspace.tool.loadmodel.model.jaxb.CValuesType;
 import fede.workspace.tool.loadmodel.model.jaxb.CommitKindType;
 import fede.workspace.tool.loadmodel.model.jaxb.EvolutionDestinationKindType;
 import fede.workspace.tool.loadmodel.model.jaxb.EvolutionKindType;
+import fede.workspace.tool.loadmodel.model.jaxb.ObjectFactory;
 import fede.workspace.tool.loadmodel.model.jaxb.UpdateKindType;
 import fede.workspace.tool.loadmodel.model.jaxb.ValueTypeType;
 import fr.imag.adele.cadse.core.CadseDomain;
@@ -1827,7 +1828,7 @@ public class InitModelImpl {
 	
 
 	public CCadse read(InputStream s) throws JAXBException {
-		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", this.getClass()
+		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", ObjectFactory.class
 				.getClassLoader());
 		Unmarshaller m = jc.createUnmarshaller();
 		return (CCadse) m.unmarshal(s);
@@ -1838,7 +1839,7 @@ public class InitModelImpl {
 	}
 
 	public void save(CCadse cadse, File file) throws JAXBException, FileNotFoundException {
-		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", this.getClass()
+		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", ObjectFactory.class
 				.getClassLoader());
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
