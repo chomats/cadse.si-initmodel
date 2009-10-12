@@ -121,6 +121,7 @@ import fr.imag.adele.fede.workspace.as.initmodel.IInitModel;
 import fr.imag.adele.fede.workspace.as.initmodel.InitModelLoadAndWrite;
 import fr.imag.adele.fede.workspace.as.platformeclipse.IPlatformEclipse;
 import fr.imag.adele.fede.workspace.si.initmodel.internal.ModelRepository;
+import fr.imag.adele.melusine.as.findmodel.CheckModel;
 import fr.imag.adele.melusine.as.findmodel.IFindModel;
 import fr.imag.adele.melusine.as.findmodel.ModelEntry;
 
@@ -1802,25 +1803,7 @@ public class InitModelImpl {
 		return lt;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see fede.workspace.role.initmodel.IInitModel#listCadseName()
-	 */
-	public String[] listCadseName() {
-		ModelEntry[] models = _initModel.getFindModel().findModelEntries("Workspace");
-		List<String> ret = new ArrayList<String>();
-		for (ModelEntry m : models) {
-			try {
-				URL aa = m.getEntry(ModelRepository.QUALIFIED_FILE_NAME);
-				if (aa != null) {
-					ret.add(m.getName());
-				}
-			} catch (IOException e) {
-			}
-		}
-		return ret.toArray(new String[ret.size()]);
-	}
+	
 
 	/**
 	 * Load from file.

@@ -151,11 +151,6 @@ public class InitModel implements IInitModel {
 	}
 
 	@Override
-	public String[] listCadseName() {
-		return impl.listCadseName();
-	}
-
-	@Override
 	public CCadse load(File file) throws FileNotFoundException, JAXBException {
 		return impl.load(file);
 	}

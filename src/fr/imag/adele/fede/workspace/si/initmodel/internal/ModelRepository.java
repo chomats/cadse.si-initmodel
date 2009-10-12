@@ -25,6 +25,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import fr.imag.adele.cadse.core.CompactUUID;
 import fr.imag.adele.cadse.core.internal.Nullable;
 import fr.imag.adele.fede.workspace.si.initmodel.InitModel;
 import fr.imag.adele.fede.workspace.si.initmodel.InitModelImpl;
+import fr.imag.adele.melusine.as.findmodel.CheckModel;
 import fr.imag.adele.melusine.as.findmodel.ModelEntry;
 
 /**
@@ -131,11 +133,17 @@ public class ModelRepository  {
 	 * @return the model repository
 	 */
 	public static ModelEntry[] findModelFile(InitModel initModel) {
-		ModelEntry[] models = initModel.getFindModel().findModelEntries("Workspace");
-		if (models == null) {
-			return null;
-		}
-		return models;
+		return initModel.getFindModel().findModelEntries("Workspace", new CheckModel() {
+			@Override
+			public boolean check(ModelEntry e) {
+				try {
+					URL aa = e.getEntry(ModelRepository.QUALIFIED_FILE_NAME);
+					return aa != null;
+				} catch (IOException e1) {
+				}
+				return false;
+			}
+		});
 	}
 
 //	/**
