@@ -1828,7 +1828,7 @@ public class InitModelImpl {
 	
 
 	public CCadse read(InputStream s) throws JAXBException {
-		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", ObjectFactory.class
+		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", this.getClass()
 				.getClassLoader());
 		Unmarshaller m = jc.createUnmarshaller();
 		return (CCadse) m.unmarshal(s);
@@ -1839,7 +1839,7 @@ public class InitModelImpl {
 	}
 
 	public void save(CCadse cadse, File file) throws JAXBException, FileNotFoundException {
-		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", ObjectFactory.class
+		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", this.getClass()
 				.getClassLoader());
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
