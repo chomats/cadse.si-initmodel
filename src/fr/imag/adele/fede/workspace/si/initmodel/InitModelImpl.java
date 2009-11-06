@@ -258,7 +258,7 @@ public class InitModelImpl {
 				if (findC == null) {
 					cr.addError("Cannot find the cadse " + ref.getName());
 					try {
-						findC = (CadseRuntime) wsDomain.createUnresolvedItem(CadseGCST.CADSE_RUNTIME, ref.getName(), new CompactUUID(ref.getId()));
+						findC = (CadseRuntime) wsDomain.createUnresolvedItem(CadseGCST.CADSE, ref.getName(), new CompactUUID(ref.getId()));
 						findC.setIdCadseDefinition(new CompactUUID(ref.getIdCadseDefinition()));
 					} catch (IllegalArgumentException e) {
 						// TODO Auto-generated catch block
@@ -463,15 +463,15 @@ public class InitModelImpl {
 					// load destination
 					getItemType(true, theWorkspaceLogique, getUUID(linkType.getDestination()), cxt);
 					// register this link type
-					CadseGCST.ABSTRACT_ITEM_TYPE_lt_ATTRIBUTES = createLinkType(theWorkspaceLogique, absIt, linkType, cxt);
+					CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES = createLinkType(theWorkspaceLogique, absIt, linkType, cxt);
 					break;
 				}
 			}
-			CadseGCST.ABSTRACT_ITEM_TYPE_lt_ATTRIBUTES.addIncomingLink(
-					new ReflectLink(CadseGCST.ABSTRACT_ITEM_TYPE_lt_ATTRIBUTES, absIt, CadseGCST.ABSTRACT_ITEM_TYPE_lt_ATTRIBUTES, -1), false);
+			CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES.addIncomingLink(
+					new ReflectLink(CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES, absIt, CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES, -1), false);
 			
 			CadseCore.theLinkType.addIncomingLink(
-					new ReflectLink(CadseGCST.ABSTRACT_ITEM_TYPE_lt_ATTRIBUTES, CadseCore.theItemType, CadseCore.theLinkType, -1), false);
+					new ReflectLink(CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES, CadseCore.theItemType, CadseCore.theLinkType, -1), false);
 			
 			
 		}
@@ -1317,7 +1317,7 @@ public class InitModelImpl {
 						throw new CadseException("cannot create type from {0}", type.getKey());
 					}
 					LogicalWorkspaceTransaction copy = theWorkspaceLogique.createTransaction();
-					Item attType = copy.createItem(it, parent, CadseGCST.ABSTRACT_ITEM_TYPE_lt_ATTRIBUTES,
+					Item attType = copy.createItem(it, parent, CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES,
 							getUUID(type.getId()), null, null);
 					CompactUUID attTypeId = attType.getId();
 					List<CValuesType> elements = type.getElement();
@@ -1420,7 +1420,7 @@ public class InitModelImpl {
 					throw new CadseException("cannot create type from {0}", type.getKey());
 				}
 				LogicalWorkspaceTransaction copy = theWorkspaceLogique.createTransaction();
-				Item attType = copy.createItem(it, parent, CadseGCST.ABSTRACT_ITEM_TYPE_lt_ATTRIBUTES,
+				Item attType = copy.createItem(it, parent, CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES,
 						getUUID(type.getId()), null, null);
 				CompactUUID attTypeId = attType.getId();
 				List<CValuesType> elements = type.getElement();
