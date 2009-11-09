@@ -848,24 +848,24 @@ public class InitModelImpl {
 	 *            the cit
 	 */
 	private void loadPageAndAction(InitContext cxt, ItemType it, CAbsItemType cit) {
-		CPages creationPagesInfo = cit.getCreationPages();
-		List<IPageFactory> creationPages = loadPages(it, cxt, creationPagesInfo);
-		List<IPageFactory> modificationPages = loadPages(it, cxt, cit.getModificationPages());
-
-		if (creationPagesInfo != null && cit instanceof CItemType) {
-			String mainActionClass = creationPagesInfo.getMainActionClass();
-			Class<? extends AbstractActionPage> clazz = null;
-			if (mainActionClass != null) {
-				clazz = loadClass(cxt.getCurrentCadseName().getQualifiedName(), mainActionClass);
-			}
-			it.setCreationAction(clazz, creationPagesInfo.getDefaultShortName());
-		}
-		if (creationPages != null) {
-			it.addCreationPages(creationPages);
-		}
-		if (modificationPages != null) {
-			it.addModificationPages(modificationPages);
-		}
+//		CPages creationPagesInfo = cit.getCreationPages();
+//		List<IPageFactory> creationPages = loadPages(it, cxt, creationPagesInfo);
+//		List<IPageFactory> modificationPages = loadPages(it, cxt, cit.getModificationPages());
+//
+//		if (creationPagesInfo != null && cit instanceof CItemType) {
+//			String mainActionClass = creationPagesInfo.getMainActionClass();
+//			Class<? extends AbstractActionPage> clazz = null;
+//			if (mainActionClass != null) {
+//				clazz = loadClass(cxt.getCurrentCadseName().getQualifiedName(), mainActionClass);
+//			}
+//			it.setCreationAction(clazz, creationPagesInfo.getDefaultShortName());
+//		}
+//		if (creationPages != null) {
+//			it.addCreationPages(creationPages);
+//		}
+//		if (modificationPages != null) {
+//			it.addModificationPages(modificationPages);
+//		}
 
 		List<IMenuAction> genActions = new ArrayList<IMenuAction>();
 		List<CMenuAction> menuactions = cit.getMenu();
@@ -927,65 +927,65 @@ public class InitModelImpl {
 
 	}
 
-	/**
-	 * Load pages.
-	 * 
-	 * @param cxt
-	 *            the cxt
-	 * @param pages
-	 *            the pages
-	 * 
-	 * @return the list< page factory>
-	 */
-	private List<IPageFactory> loadPages(ItemType it, InitContext cxt, CPages pages) {
-		if (pages == null) {
-			return null;
-		}
-		List<CPage> allPages = pages.getPage();
-		if (allPages.size() == 0) {
-			return null;
-		}
-		List<IPageFactory> pagesFactories = new ArrayList<IPageFactory>();
-		for (int i = 0; i < allPages.size(); i++) {
-
-			CPage cpage = allPages.get(i);
-			int cas = cpage.getCas();
-			if (cas == IPageFactory.PAGE_EMPTY) {
-				pagesFactories.add(new EmptyPageFactory(getUUID(cpage.getUuid()), cpage.getId()));
-			} else if (cas == 0) {
-				PageFactory a = newInstance(cxt.currentCadseName.getQualifiedName(), cpage.getClassName());
-				if (a != null) {
-					if (cpage.getTitre() != null) {
-						a.setTitle(cpage.getTitre());
-					}
-					pagesFactories.add(a);
-				}
-			} else {
-				Class<? extends PageImpl> clazz = loadClass(cxt.currentCadseName.getQualifiedName(), cpage.getClassName());
-				if (clazz != null) {
-					try {
-						ConfigurablePageFactory a = new ConfigurablePageFactory(it, getUUID(cpage.getUuid()), cas,
-								cpage.getId(), clazz);
-						if (cpage.getTitre() != null) {
-							a.setTitle(cpage.getTitre());
-						}
-						pagesFactories.add(a);
-					} catch (SecurityException e) {
-						_logger.log(Level.SEVERE, "cannot create page " + cpage.getId() + ", " + cpage.getClassName(),
-								e);
-					} catch (NoSuchMethodException e) {
-						_logger.log(Level.SEVERE, "cannot create page " + cpage.getId() + ", " + cpage.getClassName(),
-								e);
-					}
-				}
-			}
-		}
-		if (pagesFactories.size() != 0) {
-			return pagesFactories;
-		}
-		return null;
-
-	}
+//	/**
+//	 * Load pages.
+//	 * 
+//	 * @param cxt
+//	 *            the cxt
+//	 * @param pages
+//	 *            the pages
+//	 * 
+//	 * @return the list< page factory>
+//	 */
+//	private List<IPageFactory> loadPages(ItemType it, InitContext cxt, CPages pages) {
+//		if (pages == null) {
+//			return null;
+//		}
+//		List<CPage> allPages = pages.getPage();
+//		if (allPages.size() == 0) {
+//			return null;
+//		}
+//		List<IPageFactory> pagesFactories = new ArrayList<IPageFactory>();
+//		for (int i = 0; i < allPages.size(); i++) {
+//
+//			CPage cpage = allPages.get(i);
+//			int cas = cpage.getCas();
+//			if (cas == IPageFactory.PAGE_EMPTY) {
+//				pagesFactories.add(new EmptyPageFactory(getUUID(cpage.getUuid()), cpage.getId()));
+//			} else if (cas == 0) {
+//				PageFactory a = newInstance(cxt.currentCadseName.getQualifiedName(), cpage.getClassName());
+//				if (a != null) {
+//					if (cpage.getTitre() != null) {
+//						a.setTitle(cpage.getTitre());
+//					}
+//					pagesFactories.add(a);
+//				}
+//			} else {
+//				Class<? extends PageImpl> clazz = loadClass(cxt.currentCadseName.getQualifiedName(), cpage.getClassName());
+//				if (clazz != null) {
+//					try {
+//						ConfigurablePageFactory a = new ConfigurablePageFactory(it, getUUID(cpage.getUuid()), cas,
+//								cpage.getId(), clazz);
+//						if (cpage.getTitre() != null) {
+//							a.setTitle(cpage.getTitre());
+//						}
+//						pagesFactories.add(a);
+//					} catch (SecurityException e) {
+//						_logger.log(Level.SEVERE, "cannot create page " + cpage.getId() + ", " + cpage.getClassName(),
+//								e);
+//					} catch (NoSuchMethodException e) {
+//						_logger.log(Level.SEVERE, "cannot create page " + cpage.getId() + ", " + cpage.getClassName(),
+//								e);
+//					}
+//				}
+//			}
+//		}
+//		if (pagesFactories.size() != 0) {
+//			return pagesFactories;
+//		}
+//		return null;
+//
+//	}
 
 	/**
 	 * Inits the manager.
