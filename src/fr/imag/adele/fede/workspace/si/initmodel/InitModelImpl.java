@@ -73,7 +73,7 @@ import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseGCST;
 import fr.imag.adele.cadse.core.CadseRuntime;
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 import fr.imag.adele.cadse.core.DefaultItemManager;
 import fr.imag.adele.cadse.core.IItemFactory;
 import fr.imag.adele.cadse.core.IItemManager;
@@ -153,10 +153,10 @@ public class InitModelImpl {
 	class InitContext {
 
 		/** The item types. */
-		Map<CompactUUID, CItemType>	itemTypes;
+		Map<UUID, CItemType>	itemTypes;
 
 		/** The cache items. */
-		Map<CompactUUID, ItemType>	cacheItems;
+		Map<UUID, ItemType>	cacheItems;
 
 		/** The values_to_field. */
 		Map<String, Object>			values_to_field;
@@ -185,7 +185,7 @@ public class InitModelImpl {
 		}
 
 		public void reset() {
-			cacheItems = new HashMap<CompactUUID, ItemType>();
+			cacheItems = new HashMap<UUID, ItemType>();
 			values_to_field = new HashMap<String, Object>();
 			initLink = new ArrayList<ItemType>();
 		}
@@ -258,8 +258,8 @@ public class InitModelImpl {
 				if (findC == null) {
 					cr.addError("Cannot find the cadse " + ref.getName());
 					try {
-						findC = (CadseRuntime) wsDomain.createUnresolvedItem(CadseGCST.CADSE, ref.getName(), new CompactUUID(ref.getId()));
-						findC.setIdCadseDefinition(new CompactUUID(ref.getIdCadseDefinition()));
+						findC = (CadseRuntime) wsDomain.createUnresolvedItem(CadseGCST.CADSE, ref.getName(), new UUID(ref.getId()));
+						findC.setIdCadseDefinition(new UUID(ref.getIdCadseDefinition()));
 					} catch (IllegalArgumentException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -513,7 +513,7 @@ public class InitModelImpl {
 
 		List<CExtensionItemType> extItemTypes = ccadse.getExtItemType();
 		for (CExtensionItemType extit : extItemTypes) {
-			CompactUUID uuid = getUUID(extit.getItemTypeSource());
+			UUID uuid = getUUID(extit.getItemTypeSource());
 			ItemType it = cxt.cacheItems.get(uuid);
 			if (it == null) {
 				it = theWorkspaceLogique.getItemType(uuid);
@@ -736,7 +736,7 @@ public class InitModelImpl {
 	}
 
 	/** The string_to_uuid. */
-	Map<String, CompactUUID>	string_to_uuid;
+	Map<String, UUID>	string_to_uuid;
 
 	/**
 	 * Gets the uUID.
@@ -746,16 +746,16 @@ public class InitModelImpl {
 	 * 
 	 * @return the uUID
 	 */
-	public CompactUUID getUUID(String id) {
+	public UUID getUUID(String id) {
 		if (id == null) {
 			return null;
 		}
 		if (string_to_uuid == null) {
-			string_to_uuid = new HashMap<String, CompactUUID>();
+			string_to_uuid = new HashMap<String, UUID>();
 		}
-		CompactUUID ret = string_to_uuid.get(id);
+		UUID ret = string_to_uuid.get(id);
 		if (ret == null) {
-			ret = new CompactUUID(id);
+			ret = new UUID(id);
 			string_to_uuid.put(id, ret);
 		}
 		return ret;
@@ -779,7 +779,7 @@ public class InitModelImpl {
 		if (name == null || name.length() == 0) {
 			return null;
 		}
-		CompactUUID uuid = getUUID(name);
+		UUID uuid = getUUID(name);
 		return getItemType(false, currentModelType, uuid, cxt);
 	}
 
@@ -796,7 +796,7 @@ public class InitModelImpl {
 	 * @return the item type
 	 * @throws CadseException 
 	 */
-	private ItemType getItemType(boolean nosuper, LogicalWorkspace theWorkspaceLogique, CompactUUID itemTypeId,
+	private ItemType getItemType(boolean nosuper, LogicalWorkspace theWorkspaceLogique, UUID itemTypeId,
 			InitContext cxt) throws CadseException {
 		ItemType it = cxt.cacheItems.get(itemTypeId);
 		if (it != null) {
@@ -1059,7 +1059,7 @@ public class InitModelImpl {
 			it_manager = new DefaultItemManager();
 		}
 		ItemType metaType = CadseCore.theItemType;
-		CompactUUID metaTypeUUID = getUUID(cit.getMetaType());
+		UUID metaTypeUUID = getUUID(cit.getMetaType());
 		if (metaTypeUUID != null) {
 			metaType = theWorkspaceLogique.getItemType(metaTypeUUID);
 		}
@@ -1282,7 +1282,7 @@ public class InitModelImpl {
 		ItemType attributeType = null;
 		if (kind == null) {
 			try {
-				CompactUUID uuid = Convert.toUUID(type.getTypeName());
+				UUID uuid = Convert.toUUID(type.getTypeName());
 				if (uuid != null) {
 					attributeType = (ItemType) theWorkspaceLogique.getItem(uuid);
 
@@ -1306,9 +1306,9 @@ public class InitModelImpl {
 						throw new CadseException("cannot create type from {0}", type.getKey());
 					}
 
-					CompactUUID uuid;
+					UUID uuid;
 					try {
-						uuid = new CompactUUID(uuid_str);
+						uuid = new UUID(uuid_str);
 					} catch (IllegalArgumentException e1) {
 						throw new CadseException("cannot create type from {0}", e1, type.getKey());
 					}
@@ -1319,7 +1319,7 @@ public class InitModelImpl {
 					LogicalWorkspaceTransaction copy = theWorkspaceLogique.createTransaction();
 					Item attType = copy.createItem(it, parent, CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES,
 							getUUID(type.getId()), null, null);
-					CompactUUID attTypeId = attType.getId();
+					UUID attTypeId = attType.getId();
 					List<CValuesType> elements = type.getElement();
 					if (elements != null) {
 						for (CValuesType e : elements) {
@@ -1409,9 +1409,9 @@ public class InitModelImpl {
 					throw new CadseException("cannot create type from {0}", type.getKey());
 				}
 
-				CompactUUID uuid;
+				UUID uuid;
 				try {
-					uuid = new CompactUUID(uuid_str);
+					uuid = new UUID(uuid_str);
 				} catch (IllegalArgumentException e1) {
 					throw new CadseException("cannot create type from {0}", e1, type.getKey());
 				}
@@ -1422,7 +1422,7 @@ public class InitModelImpl {
 				LogicalWorkspaceTransaction copy = theWorkspaceLogique.createTransaction();
 				Item attType = copy.createItem(it, parent, CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES,
 						getUUID(type.getId()), null, null);
-				CompactUUID attTypeId = attType.getId();
+				UUID attTypeId = attType.getId();
 				List<CValuesType> elements = type.getElement();
 				if (elements != null) {
 					for (CValuesType e : elements) {
@@ -1525,9 +1525,9 @@ public class InitModelImpl {
 		// from
 		// {0}",type.getKey());
 		//
-		// CompactUUID uuid;
+		// UUID uuid;
 		// try {
-		// uuid = new CompactUUID(uuid_str);
+		// uuid = new UUID(uuid_str);
 		// } catch (IllegalArgumentException e1) {
 		// throw new CadseException("cannot create type from {0}",e1,
 		// type.getKey());
@@ -1540,7 +1540,7 @@ public class InitModelImpl {
 		// CadseGCST.META_ITEM_TYPE_lt_ATTRIBUTES_DEFINITION,
 		// getUUID(type.getId()),
 		// null, null);
-		// CompactUUID attTypeId = attType.getId();
+		// UUID attTypeId = attType.getId();
 		// List<CValuesType> elements = type.getElement();
 		// if (elements != null) {
 		// for (CValuesType e : elements) {
@@ -1755,7 +1755,7 @@ public class InitModelImpl {
 		}
 
 		String inverse = linkType.getInverseLink();
-		CompactUUID uuid = getUUID(linkType.getDestination());
+		UUID uuid = getUUID(linkType.getDestination());
 		ItemType destType = currentModelType.getItemType(uuid);
 		if (destType == null) {
 			_logger.log(Level.SEVERE, "Cannot find item type " + linkType.getDestination());

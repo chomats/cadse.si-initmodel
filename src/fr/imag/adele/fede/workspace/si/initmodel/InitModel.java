@@ -13,7 +13,7 @@ import fede.workspace.tool.loadmodel.model.jaxb.CValuesType;
 import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseRuntime;
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 import fr.imag.adele.cadse.core.Item;
 import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
@@ -146,7 +146,7 @@ public class InitModel implements IInitModel {
 	}
 
 	@Override
-	public CompactUUID getUUID(String id) {
+	public UUID getUUID(String id) {
 		return impl.getUUID(id);
 	}
 

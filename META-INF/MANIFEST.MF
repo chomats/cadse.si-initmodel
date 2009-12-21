@@ -184,27 +184,26 @@ iPOJO-Components: component { $immediate="false" $classname="fr.imag.ad
  CValuesType}" $name="getMin" $return="int" }method { $arguments="{fede
  .workspace.tool.loadmodel.model.jaxb.CValuesType}" $name="__getMin" $r
  eturn="int" }method { $arguments="{java.lang.String}" $name="getUUID" 
- $return="fr.imag.adele.cadse.core.CompactUUID" }method { $arguments="{
- java.lang.String}" $name="__getUUID" $return="fr.imag.adele.cadse.core
- .CompactUUID" }method { $arguments="{java.io.File}" $name="load" $retu
- rn="fede.workspace.tool.loadmodel.model.jaxb.CCadse" }method { $argume
- nts="{java.io.File}" $name="__load" $return="fede.workspace.tool.loadm
- odel.model.jaxb.CCadse" }method { $name="loadCadses" $return="fr.imag.
- adele.cadse.core.CadseRuntime[]" }method { $name="__loadCadses" $retur
- n="fr.imag.adele.cadse.core.CadseRuntime[]" }method { $arguments="{jav
- a.lang.String,java.lang.String}" $name="loadClass" $return="java.lang.
- Class" }method { $arguments="{java.lang.String,java.lang.String}" $nam
- e="__loadClass" $return="java.lang.Class" }method { $arguments="{fede.
- workspace.tool.loadmodel.model.jaxb.CCadse,java.io.File}" $name="save"
-  }method { $arguments="{fede.workspace.tool.loadmodel.model.jaxb.CCads
- e,java.io.File}" $name="__save" }method { $name="start" }method { $nam
- e="__start" }interface { $name="fr.imag.adele.fede.workspace.as.initmo
- del.IInitModel" }}requires { $field="workspaceCU" $optional="true" $fi
- lter="(sam.domain.root=Workspace)" }requires { $field="findModel" $opt
- ional="false" }requires { $field="loadFactories" $optional="false" }re
- quires { $field="classReferencer" $optional="false" }requires { $field
- ="platformService" $optional="false" }}instance { $component="fr.imag.
- adele.fede.workspace.si.initmodel.InitModel" $name="fr.imag.adele.cads
- e.si.workspace.initmodel.instance" }
+ $return="java.util.UUID" }method { $arguments="{java.lang.String}" $na
+ me="__getUUID" $return="java.util.UUID" }method { $arguments="{java.io
+ .File}" $name="load" $return="fede.workspace.tool.loadmodel.model.jaxb
+ .CCadse" }method { $arguments="{java.io.File}" $name="__load" $return=
+ "fede.workspace.tool.loadmodel.model.jaxb.CCadse" }method { $name="loa
+ dCadses" $return="fr.imag.adele.cadse.core.CadseRuntime[]" }method { $
+ name="__loadCadses" $return="fr.imag.adele.cadse.core.CadseRuntime[]" 
+ }method { $arguments="{java.lang.String,java.lang.String}" $name="load
+ Class" $return="java.lang.Class" }method { $arguments="{java.lang.Stri
+ ng,java.lang.String}" $name="__loadClass" $return="java.lang.Class" }m
+ ethod { $arguments="{fede.workspace.tool.loadmodel.model.jaxb.CCadse,j
+ ava.io.File}" $name="save" }method { $arguments="{fede.workspace.tool.
+ loadmodel.model.jaxb.CCadse,java.io.File}" $name="__save" }method { $n
+ ame="start" }method { $name="__start" }interface { $name="fr.imag.adel
+ e.fede.workspace.as.initmodel.IInitModel" }}requires { $field="workspa
+ ceCU" $optional="true" $filter="(sam.domain.root=Workspace)" }requires
+  { $field="findModel" $optional="false" }requires { $field="loadFactor
+ ies" $optional="false" }requires { $field="classReferencer" $optional=
+ "false" }requires { $field="platformService" $optional="false" }}insta
+ nce { $component="fr.imag.adele.fede.workspace.si.initmodel.InitModel"
+  $name="fr.imag.adele.cadse.si.workspace.initmodel.instance" }
 ipojo-auto-start: true
 
