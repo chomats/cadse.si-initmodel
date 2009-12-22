@@ -91,7 +91,7 @@ import fr.imag.adele.cadse.core.enumdef.TWEvol;
 import fr.imag.adele.cadse.core.enumdef.TWUpdateKind;
 import fr.imag.adele.cadse.core.impl.AbstractLinkTypeManager;
 import fr.imag.adele.cadse.core.impl.CadseCore;
-import fr.imag.adele.cadse.core.impl.CadseIllegalArgumentException;
+import fr.imag.adele.cadse.core.CadseIllegalArgumentException;
 import fr.imag.adele.cadse.core.impl.ReflectLink;
 import fr.imag.adele.cadse.core.impl.attribute.BooleanAttributeType;
 import fr.imag.adele.cadse.core.impl.attribute.DateAttributeType;
@@ -118,9 +118,26 @@ import fr.imag.adele.cadse.core.util.Assert;
 import fr.imag.adele.cadse.core.util.Convert;
 import fr.imag.adele.cadse.workspace.as.classreferencer.IClassReferencer;
 import fr.imag.adele.cadse.workspace.as.loadfactory.ILoadFactory;
-import fr.imag.adele.fede.workspace.as.initmodel.IInitModel;
+import fr.imag.adele.fede.workspace.as.initmodel.ErrorWhenLoadedModel;
 import fr.imag.adele.fede.workspace.as.initmodel.InitModelLoadAndWrite;
-import fr.imag.adele.fede.workspace.as.platformeclipse.IPlatformEclipse;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAbsItemType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAction;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CActionContributor;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAttType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CCadse;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CCadseRef;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CExtensionItemType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItem;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItemType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CLinkType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CMenuAction;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CMetaAttribute;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CValuesType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CommitKindType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.EvolutionDestinationKindType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.EvolutionKindType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.UpdateKindType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.ValueTypeType;
 import fr.imag.adele.fede.workspace.si.initmodel.internal.ModelRepository;
 import fr.imag.adele.melusine.as.findmodel.CheckModel;
 import fr.imag.adele.melusine.as.findmodel.IFindModel;
@@ -258,8 +275,8 @@ public class InitModelImpl {
 				if (findC == null) {
 					cr.addError("Cannot find the cadse " + ref.getName());
 					try {
-						findC = (CadseRuntime) wsDomain.createUnresolvedItem(CadseGCST.CADSE, ref.getName(), new UUID(ref.getId()));
-						findC.setIdCadseDefinition(new UUID(ref.getIdCadseDefinition()));
+						findC = (CadseRuntime) wsDomain.createUnresolvedItem(CadseGCST.CADSE, ref.getName(), UUID.fromString(ref.getId()));
+						findC.setIdCadseDefinition( UUID.fromString(ref.getIdCadseDefinition()));
 					} catch (IllegalArgumentException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -755,7 +772,7 @@ public class InitModelImpl {
 		}
 		UUID ret = string_to_uuid.get(id);
 		if (ret == null) {
-			ret = new UUID(id);
+			ret = UUID.fromString(id);
 			string_to_uuid.put(id, ret);
 		}
 		return ret;
@@ -1149,6 +1166,11 @@ public class InitModelImpl {
 		}
 	}
 
+	private IAttributeType<?> convertAtt(String attribute) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	private void initEvol(IAttributeType<? extends Object> att, CValuesType attType) {
 		TWCommitKind commitKind = convert(attType.getTwCommit());
 		IInternalTWAttribute evolAtt = (IInternalTWAttribute) att;
@@ -1411,7 +1433,7 @@ public class InitModelImpl {
 
 				UUID uuid;
 				try {
-					uuid = new UUID(uuid_str);
+					uuid = UUID.fromString(uuid_str);
 				} catch (IllegalArgumentException e1) {
 					throw new CadseException("cannot create type from {0}", e1, type.getKey());
 				}
@@ -1432,7 +1454,7 @@ public class InitModelImpl {
 							continue;
 						}
 						Object value = att.convertTo(e.getValue());
-						attType.setAttribute(att.getName(), value);
+						attType.setAttribute(convertAtt(att.getName()), value);
 						// TODO set flag
 					}
 				}
