@@ -1,112 +1,37 @@
 Manifest-Version: 1.0
+Export-Package: fr.imag.adele.fede.workspace.si.initmodel;uses:="org.a
+ pache.felix.ipojo,fr.imag.adele.fede.workspace.as.initmodel,fr.imag.a
+ dele.cadse.workspace.as.classreferencer,fr.imag.adele.melusine.as.fin
+ dmodel,fr.imag.adele.cadse.as.platformide,fr.imag.adele.cadse.core,fr
+ .imag.adele.cadse.core.attribute,fr.imag.adele.fede.workspace.as.init
+ model.jaxb,fr.imag.adele.cadse.workspace.as.loadfactory,javax.xml.bin
+ d,org.osgi.framework,fr.imag.adele.cadse.core.impl,fr.imag.adele.cads
+ e.core.enumdef,fr.imag.adele.cadse.core.impl.attribute,fr.imag.adele.
+ cadse.core.internal.attribute,fr.imag.adele.cadse.core.util,fr.imag.a
+ dele.cadse.core.transaction,fr.imag.adele.cadse.core.impl.internal,fr
+ .imag.adele.cadse.core.ui,fr.imag.adele.cadse.core.transaction.delta"
+Built-By: chomats
+Tool: Bnd-0.0.357
+Bundle-Name: fr.imag.adele.cadse.si.initmodel
+Created-By: Apache Maven Bundle Plugin
+Bundle-Vendor: Adele/LIG/ Grenoble University, France
+Build-Jdk: 1.6.0_17
+Bundle-Version: 2.3.0.SNAPSHOT
+Bnd-LastModified: 1261575247497
 Bundle-ManifestVersion: 2
-Bundle-Name: fr.imag.adele.cadse.si.workspace.initmodel
-Bundle-SymbolicName: fr.imag.adele.cadse.si.workspace.initmodel;singleton:=true
-Bundle-Vendor: Adele/LIG/ Grenoble University
-Bundle-Version: 2.2.1.qualifier
-Bundle-Localization: plugin
-Bundle-ClassPath: .
-Bundle-Description: Bundle fr.imag.adele.cadse.si.workspace.initmodel
-Eclipse-LazyStart: false
-Export-Package: fr.imag.adele.fede.workspace.si.initmodel;version="2.2.1"
-Import-Package: com.sun.xml.bind.v2;version="2.1.5",
- fede.workspace.role.initmodel;version="1.0.0",
- fede.workspace.tool.loadmodel.model.jaxb;version="1.0.0",
- fr.imag.adele.cadse.core;version="2.2.1",
- fr.imag.adele.cadse.core.attribute;version="2.2.1",
- fr.imag.adele.cadse.core.build;version="2.2.1",
- fr.imag.adele.cadse.core.delta;version="2.2.1",
- fr.imag.adele.cadse.core.enumdef;version="2.2.1",
- fr.imag.adele.cadse.core.impl;version="2.2.1",
- fr.imag.adele.cadse.core.impl.attribute;version="2.2.1",
- fr.imag.adele.cadse.core.impl.internal;version="2.2.1",
- fr.imag.adele.cadse.core.impl.internal.delta;version="2.2.1",
- fr.imag.adele.cadse.core.impl.ui;version="2.2.1",
- fr.imag.adele.cadse.core.internal;version="2.2.1",
- fr.imag.adele.cadse.core.internal.attribute;version="2.2.1",
- fr.imag.adele.cadse.core.transaction;version="2.2.1",
- fr.imag.adele.cadse.core.ui;version="2.2.1",
- fr.imag.adele.cadse.core.util;version="2.2.1",
- fr.imag.adele.cadse.workspace.as.classreferencer;version="2.2.1",
- fr.imag.adele.cadse.workspace.as.loadfactory;version="2.2.1",
- fr.imag.adele.fede.workspace.as.initmodel,
- fr.imag.adele.fede.workspace.as.platformeclipse;version="2.2.1",
- fr.imag.adele.fede.workspace.si.initmodel;version="2.2.1",
- fr.imag.adele.melusine.as.findmodel;version="2.2.0",
- javax.xml.bind,
- javax.xml.bind.annotation,
- javax.xml.stream,
- org.apache.felix.ipojo;version="1.2.0",
- org.apache.felix.ipojo.architecture;version="1.2.0",
- org.eclipse.core.internal.registry.osgi,
- org.eclipse.core.runtime,
- org.osgi.framework;version="1.4.0",
- org.osgi.service.cm;version="1.2",
- org.osgi.service.log;version="1.3"
-Created-By: envsam & iPOJO
-iPOJO-Components: component { $immediate="false" $classname="fr.imag.ad
- ele.fede.workspace.si.initmodel.InitModel" $factory="fr.imag.adele.fed
- e.workspace.si.initmodel.InitModel" $architecture="true" callback { $t
- ransition="validate" $method="start" }provides { $specification="fr.im
- ag.adele.fede.workspace.as.initmodel.IInitModel" }manipulation { field
-  { $name="classReferencer" $type="fr.imag.adele.cadse.workspace.as.cla
- ssreferencer.IClassReferencer" }field { $name="loadFactories" $type="f
- r.imag.adele.cadse.workspace.as.loadfactory.ILoadFactory[]" }field { $
- name="impl" $type="fr.imag.adele.fede.workspace.si.initmodel.InitModel
- Impl" }field { $name="findModel" $type="fr.imag.adele.melusine.as.find
- model.IFindModel" }field { $name="workspaceCU" $type="fr.imag.adele.ca
- dse.core.CadseDomain" }field { $name="platformService" $type="fr.imag.
- adele.cadse.as.platformide.IPlatformIDE" }method { $name="$init" }meth
- od { $name="getWorkspaceCU" $return="fr.imag.adele.cadse.core.CadseDom
- ain" }method { $name="getFindModel" $return="fr.imag.adele.melusine.as
- .findmodel.IFindModel" }method { $name="getLoadFactories" $return="fr.
- imag.adele.cadse.workspace.as.loadfactory.ILoadFactory[]" }method { $n
- ame="getClassReferencer" $return="fr.imag.adele.cadse.workspace.as.cla
- ssreferencer.IClassReferencer" }method { $name="getPlatformService" $r
- eturn="fr.imag.adele.cadse.as.platformide.IPlatformIDE" }method { $arg
- uments="{fr.imag.adele.cadse.core.Item}" $name="convertCadsegToCAttTyp
- e" $return="fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAttType" }
- method { $arguments="{fr.imag.adele.cadse.core.Item}" $name="convertCa
- dsegToCItemType" $return="fr.imag.adele.fede.workspace.as.initmodel.ja
- xb.CItemType" }method { $arguments="{fr.imag.adele.fede.workspace.as.i
- nitmodel.jaxb.CValuesType}" $name="convertToAttributeType" $return="fr
- .imag.adele.cadse.core.attribute.IAttributeType" }method { $arguments=
- "{fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAttType,fr.imag.adel
- e.cadse.core.Item,java.lang.String}" $name="convertToAttributeType" $r
- eturn="fr.imag.adele.cadse.core.attribute.IAttributeType" }method { $a
- rguments="{fr.imag.adele.cadse.core.attribute.IAttributeType}" $name="
- convertToCAttType" $return="fr.imag.adele.fede.workspace.as.initmodel.
- jaxb.CAttType" }method { $arguments="{fr.imag.adele.cadse.core.ItemTyp
- e}" $name="convertToCItemType" $return="fr.imag.adele.fede.workspace.a
- s.initmodel.jaxb.CItemType" }method { $arguments="{fr.imag.adele.fede.
- workspace.as.initmodel.jaxb.CValuesType,fr.imag.adele.cadse.core.attri
- bute.IAttributeType}" $name="convertToCValue" $return="java.lang.Objec
- t" }method { $arguments="{fr.imag.adele.fede.workspace.as.initmodel.ja
- xb.CItemType}" $name="convertToItemType" $return="fr.imag.adele.cadse.
- core.ItemType" }method { $arguments="{fr.imag.adele.cadse.core.Logical
- Workspace,fr.imag.adele.cadse.core.ItemType,fr.imag.adele.fede.workspa
- ce.as.initmodel.jaxb.CValuesType,java.lang.String}" $name="createAttri
- tuteType" $return="fr.imag.adele.cadse.core.attribute.IAttributeType" 
- }method { $arguments="{fr.imag.adele.cadse.core.CadseRuntime[]}" $name
- ="executeCadses" $return="int" }method { $arguments="{fr.imag.adele.fe
- de.workspace.as.initmodel.jaxb.CValuesType}" $name="getFlag" $return="
- int" }method { $arguments="{fr.imag.adele.fede.workspace.as.initmodel.
- jaxb.CValuesType}" $name="getMax" $return="int" }method { $arguments="
- {fr.imag.adele.fede.workspace.as.initmodel.jaxb.CValuesType}" $name="g
- etMin" $return="int" }method { $arguments="{java.lang.String}" $name="
- getUUID" $return="java.util.UUID" }method { $arguments="{java.io.File}
- " $name="load" $return="fr.imag.adele.fede.workspace.as.initmodel.jaxb
- .CCadse" }method { $name="loadCadses" $return="fr.imag.adele.cadse.cor
- e.CadseRuntime[]" }method { $arguments="{java.lang.String,java.lang.St
- ring}" $name="loadClass" $return="java.lang.Class" }method { $argument
- s="{fr.imag.adele.fede.workspace.as.initmodel.jaxb.CCadse,java.io.File
- }" $name="save" }method { $name="start" }interface { $name="fr.imag.ad
- ele.fede.workspace.as.initmodel.IInitModel" }}requires { $field="works
- paceCU" $optional="true" $filter="(sam.domain.root=Workspace)" }requir
- es { $field="findModel" $optional="false" }requires { $field="loadFact
- ories" $optional="false" }requires { $field="classReferencer" $optiona
- l="false" }requires { $field="platformService" $optional="false" }}ins
- tance { $component="fr.imag.adele.fede.workspace.si.initmodel.InitMode
- l" $name="fr.imag.adele.cadse.si.workspace.initmodel.instance" }
-ipojo-auto-start: true
+Bundle-Description: Cadse impl of init model
+Import-Package: fr.imag.adele.cadse.as.platformide,fr.imag.adele.cadse
+ .core,fr.imag.adele.cadse.core.attribute,fr.imag.adele.cadse.core.enu
+ mdef,fr.imag.adele.cadse.core.impl,fr.imag.adele.cadse.core.impl.attr
+ ibute,fr.imag.adele.cadse.core.impl.internal,fr.imag.adele.cadse.core
+ .internal.attribute,fr.imag.adele.cadse.core.transaction,fr.imag.adel
+ e.cadse.core.transaction.delta,fr.imag.adele.cadse.core.ui,fr.imag.ad
+ ele.cadse.core.util,fr.imag.adele.cadse.workspace.as.classreferencer,
+ fr.imag.adele.cadse.workspace.as.loadfactory,fr.imag.adele.fede.works
+ pace.as.initmodel,fr.imag.adele.fede.workspace.as.initmodel.jaxb,fr.i
+ mag.adele.fede.workspace.si.initmodel,fr.imag.adele.melusine.as.findm
+ odel,javax.xml.bind;version="2.2",org.apache.felix.ipojo,org.osgi.fra
+ mework;version="1.5"
+Bundle-DocURL: http://www-adele.imag.fr/
+Bundle-SymbolicName: fr.imag.adele.cadse.si.initmodel
 

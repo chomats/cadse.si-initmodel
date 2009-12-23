@@ -55,6 +55,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- iPOJO Maven Plugin Configuration : nothing to do -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.4.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+            
         </plugins>
     </build>
     <repositories>
@@ -100,6 +114,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>as.cu</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>as.initmodel</artifactId>
+        	<version>${project.version}</version>
+        	<type>bundle</type>
         </dependency>
     </dependencies>
 </project>

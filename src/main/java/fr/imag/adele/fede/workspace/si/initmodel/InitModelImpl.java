@@ -47,28 +47,6 @@ import javax.xml.bind.Unmarshaller;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
-import fede.workspace.role.initmodel.ErrorWhenLoadedModel;
-import fede.workspace.tool.loadmodel.model.jaxb.CAbsItemType;
-import fede.workspace.tool.loadmodel.model.jaxb.CAction;
-import fede.workspace.tool.loadmodel.model.jaxb.CActionContributor;
-import fede.workspace.tool.loadmodel.model.jaxb.CAttType;
-import fede.workspace.tool.loadmodel.model.jaxb.CCadse;
-import fede.workspace.tool.loadmodel.model.jaxb.CCadseRef;
-import fede.workspace.tool.loadmodel.model.jaxb.CExtensionItemType;
-import fede.workspace.tool.loadmodel.model.jaxb.CItem;
-import fede.workspace.tool.loadmodel.model.jaxb.CItemType;
-import fede.workspace.tool.loadmodel.model.jaxb.CLinkType;
-import fede.workspace.tool.loadmodel.model.jaxb.CMenuAction;
-import fede.workspace.tool.loadmodel.model.jaxb.CMetaAttribute;
-import fede.workspace.tool.loadmodel.model.jaxb.CPage;
-import fede.workspace.tool.loadmodel.model.jaxb.CPages;
-import fede.workspace.tool.loadmodel.model.jaxb.CValuesType;
-import fede.workspace.tool.loadmodel.model.jaxb.CommitKindType;
-import fede.workspace.tool.loadmodel.model.jaxb.EvolutionDestinationKindType;
-import fede.workspace.tool.loadmodel.model.jaxb.EvolutionKindType;
-import fede.workspace.tool.loadmodel.model.jaxb.ObjectFactory;
-import fede.workspace.tool.loadmodel.model.jaxb.UpdateKindType;
-import fede.workspace.tool.loadmodel.model.jaxb.ValueTypeType;
 import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseGCST;
@@ -114,7 +92,7 @@ import fr.imag.adele.cadse.core.ui.IActionContributor;
 import fr.imag.adele.cadse.core.ui.IPageFactory;
 import fr.imag.adele.cadse.core.ui.MenuAction;
 import fr.imag.adele.cadse.core.ui.PageFactory;
-import fr.imag.adele.cadse.core.util.Assert;
+import fr.imag.adele.cadse.util.Assert;
 import fr.imag.adele.cadse.core.util.Convert;
 import fr.imag.adele.cadse.workspace.as.classreferencer.IClassReferencer;
 import fr.imag.adele.cadse.workspace.as.loadfactory.ILoadFactory;
@@ -1119,8 +1097,14 @@ public class InitModelImpl {
 		List<CMetaAttribute> metaAttributes = cit.getMetaAttribute();
 		for (CMetaAttribute ma : metaAttributes) {
 			try {
+				IAttributeType<?> attribute = findAttribute(it, ma.getKey());
+				if (attribute == null) {
+					_logger.log(Level.SEVERE, MessageFormat.format("Cannot find attribute for type {0} an attribute {1}.", it
+							.getName(), ma.getKey()));
+					continue;
+				}
 				ma.getValue().setKey(ma.getKey());
-				it.setAttribute(ma.getKey(), convertToCValue(ma.getValue(), null));
+				it.setAttribute(attribute, convertToCValue(ma.getValue(), null));
 			} catch (Throwable e) {
 				_logger.log(Level.SEVERE, MessageFormat.format("Cannot create for type {0} an attribute {1}.", it
 						.getName(), ma.getKey()), e);
@@ -1166,10 +1150,19 @@ public class InitModelImpl {
 		}
 	}
 
-	private IAttributeType<?> convertAtt(String attribute) {
-		// TODO Auto-generated method stub
-		return null;
+	private IAttributeType<?> findAttribute(ItemType it, String key) {
+	
+		IAttributeType<?> ret = null;
+		UUID attId = null;
+		try {
+			attId = UUID.fromString(key);
+		} catch(IllegalArgumentException e){
+			return it.getLocalAttributeType(key);
+		}
+		ret = it.getLocalAttributeType(attId);
+		return ret ;
 	}
+
 
 	private void initEvol(IAttributeType<? extends Object> att, CValuesType attType) {
 		TWCommitKind commitKind = convert(attType.getTwCommit());
@@ -1330,7 +1323,7 @@ public class InitModelImpl {
 
 					UUID uuid;
 					try {
-						uuid = new UUID(uuid_str);
+						uuid = UUID.fromString(uuid_str);
 					} catch (IllegalArgumentException e1) {
 						throw new CadseException("cannot create type from {0}", e1, type.getKey());
 					}
@@ -1449,12 +1442,12 @@ public class InitModelImpl {
 				if (elements != null) {
 					for (CValuesType e : elements) {
 						String c = e.getKey();
-						IAttributeType<?> att = it.getAttributeType(e.getKey());
+						IAttributeType<?> att = findAttribute(it, e.getKey());
 						if (att == null) {
 							continue;
 						}
 						Object value = att.convertTo(e.getValue());
-						attType.setAttribute(convertAtt(att.getName()), value);
+						attType.setAttribute(att, value);
 						// TODO set flag
 					}
 				}

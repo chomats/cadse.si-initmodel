@@ -33,9 +33,6 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
-import fede.workspace.role.initmodel.ErrorWhenLoadedModel;
-import fede.workspace.tool.loadmodel.model.jaxb.CCadse;
-import fede.workspace.tool.loadmodel.model.jaxb.CItemType;
 import java.util.UUID;
 import fr.imag.adele.cadse.util.Nullable;
 import fr.imag.adele.fede.workspace.as.initmodel.ErrorWhenLoadedModel;
