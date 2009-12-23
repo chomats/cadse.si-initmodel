@@ -17,7 +17,7 @@ Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Adele/LIG/ Grenoble University, France
 Build-Jdk: 1.6.0_17
 Bundle-Version: 2.3.0.SNAPSHOT
-Bnd-LastModified: 1261575247497
+Bnd-LastModified: 1261581199270
 Bundle-ManifestVersion: 2
 Bundle-Description: Cadse impl of init model
 Import-Package: fr.imag.adele.cadse.as.platformide,fr.imag.adele.cadse
@@ -30,8 +30,8 @@ Import-Package: fr.imag.adele.cadse.as.platformide,fr.imag.adele.cadse
  fr.imag.adele.cadse.workspace.as.loadfactory,fr.imag.adele.fede.works
  pace.as.initmodel,fr.imag.adele.fede.workspace.as.initmodel.jaxb,fr.i
  mag.adele.fede.workspace.si.initmodel,fr.imag.adele.melusine.as.findm
- odel,javax.xml.bind;version="2.2",org.apache.felix.ipojo,org.osgi.fra
- mework;version="1.5"
+ odel,javax.xml.bind;version="2.2",org.apache.felix.ipojo;version="1.4
+ ",org.osgi.framework;version="1.5"
 Bundle-DocURL: http://www-adele.imag.fr/
 Bundle-SymbolicName: fr.imag.adele.cadse.si.initmodel
 
