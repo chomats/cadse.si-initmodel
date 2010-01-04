@@ -9,101 +9,57 @@
     <name>fr.imag.adele.cadse.si.initmodel</name>
     <version>2.3.0-SNAPSHOT</version>
     <description>Cadse impl of init model</description>
-    <organization>
-        <name>Adele/LIG/ Grenoble University, France</name>
-        <url>http://www-adele.imag.fr/</url>
-    </organization>
+    <parent>
+		<artifactId>fr.imag.adele.cadse.parent.ipojo</artifactId>
+		<groupId>fr.imag.adele.cadse</groupId>
+		<version>2.3.0-SNAPSHOT</version>
+		<relativePath>../fr.imag.adele.cadse.parent.ipojo</relativePath>
+	</parent>
+	
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
+            
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <manifestLocation>META-INF</manifestLocation>
-                    <instructions>
-                        <Bundle-Name>${pom.name}</Bundle-Name>
-                        <Bundle-Description>${pom.description}</Bundle-Description>
-                        <Export-Package>fr.imag.adele.fede.workspace.si.initmodel</Export-Package>
+                  	 <instructions>
+                        <Export-Package>fr.imag.adele.fede.workspace.si.initmodel;version="${version.cadse}"</Export-Package>
                         <Private-Package>fr.imag.adele.fede.workspace.si.initmodel.internal</Private-Package>
-                        <Import-Package>*</Import-Package>
-                        <Ipojo-auto-start>true</Ipojo-auto-start>
-                       	<_removeheaders>Bnd-LastModified</_removeheaders>
                     </instructions>
                 </configuration>
             </plugin>
-            <!-- iPOJO Maven Plugin Configuration : nothing to do -->
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-ipojo-plugin</artifactId>
-				<version>1.4.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>ipojo-bundle</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-            
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Repository for Maven</name>
-            <url>http://download.java.net/maven/2/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>as.initmodel</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>as.findmodel</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>as.loadfactory</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>as.classreferencer</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>as.platformeIDE</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>cu.core</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>as.cu</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-        	<groupId>${project.groupId}</groupId>
-        	<artifactId>as.initmodel</artifactId>
-        	<version>${project.version}</version>
-        	<type>bundle</type>
         </dependency>
     </dependencies>
 </project>
