@@ -1843,7 +1843,7 @@ public class InitModelImpl {
 	
 
 	public CCadse read(InputStream s) throws JAXBException {
-		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", this.getClass()
+		JAXBContext jc = JAXBContext.newInstance("fr.imag.adele.fede.workspace.as.initmodel.jaxb", this.getClass()
 				.getClassLoader());
 		Unmarshaller m = jc.createUnmarshaller();
 		return (CCadse) m.unmarshal(s);
@@ -1854,7 +1854,7 @@ public class InitModelImpl {
 	}
 
 	public void save(CCadse cadse, File file) throws JAXBException, FileNotFoundException {
-		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", this.getClass()
+		JAXBContext jc = JAXBContext.newInstance("fr.imag.adele.fede.workspace.as.initmodel.jaxb", this.getClass()
 				.getClassLoader());
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -1884,7 +1884,7 @@ public class InitModelImpl {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToAttributeType(fede.workspace.tool.loadmodel.model.jaxb.CAttType)
+	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToAttributeType(fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAttType)
 	 */
 	public IAttributeType<?> convertToAttributeType(CAttType attType, Item parent, String cadseName) {
 		LogicalWorkspace wl = CadseCore.getLogicalWorkspace();
@@ -1913,7 +1913,7 @@ public class InitModelImpl {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToAttributeType(fede.workspace.tool.loadmodel.model.jaxb.CValuesType)
+	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToAttributeType(fr.imag.adele.fede.workspace.as.initmodel.jaxb.CValuesType)
 	 */
 	public IAttributeType<?> convertToAttributeType(CValuesType attType) {
 		// TODO Auto-generated method stub
@@ -1943,7 +1943,7 @@ public class InitModelImpl {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToItemType(fede.workspace.tool.loadmodel.model.jaxb.CItemType)
+	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToItemType(fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItemType)
 	 */
 	public ItemType convertToItemType(CItemType itemType) {
 		// TODO Auto-generated method stub
@@ -1953,7 +1953,7 @@ public class InitModelImpl {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToCValue(fede.workspace.tool.loadmodel.model.jaxb.CValuesType,
+	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToCValue(fr.imag.adele.fede.workspace.as.initmodel.jaxb.CValuesType,
 	 *      fr.imag.adele.cadse.core.attribute.IAttributeType)
 	 */
 	public Object convertToCValue(CValuesType value, IAttributeType<?> attDefinition) {
