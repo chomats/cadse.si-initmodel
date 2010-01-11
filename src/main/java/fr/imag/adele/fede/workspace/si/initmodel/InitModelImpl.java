@@ -120,6 +120,7 @@ import fr.imag.adele.fede.workspace.si.initmodel.internal.ModelRepository;
 import fr.imag.adele.melusine.as.findmodel.CheckModel;
 import fr.imag.adele.melusine.as.findmodel.IFindModel;
 import fr.imag.adele.melusine.as.findmodel.ModelEntry;
+import com.sun.xml.bind.v2.ContextFactory;
 
 /**
  * @generated
