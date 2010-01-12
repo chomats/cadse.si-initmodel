@@ -5,23 +5,23 @@ import java.io.FileNotFoundException;
 
 import javax.xml.bind.JAXBException;
 
-import fede.workspace.role.initmodel.ErrorWhenLoadedModel;
-import fede.workspace.tool.loadmodel.model.jaxb.CAttType;
-import fede.workspace.tool.loadmodel.model.jaxb.CCadse;
-import fede.workspace.tool.loadmodel.model.jaxb.CItemType;
-import fede.workspace.tool.loadmodel.model.jaxb.CValuesType;
+import fr.imag.adele.cadse.as.platformide.IPlatformIDE;
 import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseRuntime;
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 import fr.imag.adele.cadse.core.Item;
 import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
 import fr.imag.adele.cadse.workspace.as.classreferencer.IClassReferencer;
 import fr.imag.adele.cadse.workspace.as.loadfactory.ILoadFactory;
+import fr.imag.adele.fede.workspace.as.initmodel.ErrorWhenLoadedModel;
 import fr.imag.adele.fede.workspace.as.initmodel.IInitModel;
-import fr.imag.adele.fede.workspace.as.platformeclipse.IPlatformEclipse;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAttType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CCadse;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItemType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CValuesType;
 import fr.imag.adele.melusine.as.findmodel.IFindModel;
 
 public class InitModel implements IInitModel {
@@ -49,7 +49,7 @@ public class InitModel implements IInitModel {
 	/**
 	 * @generated
 	 */
-	IPlatformEclipse			platformService;
+	IPlatformIDE			platformService;
 
 	
 	
@@ -69,7 +69,7 @@ public class InitModel implements IInitModel {
 		return classReferencer;
 	}
 
-	public IPlatformEclipse getPlatformService() {
+	public IPlatformIDE getPlatformService() {
 		return platformService;
 	}
 
@@ -146,7 +146,7 @@ public class InitModel implements IInitModel {
 	}
 
 	@Override
-	public CompactUUID getUUID(String id) {
+	public UUID getUUID(String id) {
 		return impl.getUUID(id);
 	}
 

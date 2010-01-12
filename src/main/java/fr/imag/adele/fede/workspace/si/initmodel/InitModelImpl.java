@@ -47,33 +47,11 @@ import javax.xml.bind.Unmarshaller;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
-import fede.workspace.role.initmodel.ErrorWhenLoadedModel;
-import fede.workspace.tool.loadmodel.model.jaxb.CAbsItemType;
-import fede.workspace.tool.loadmodel.model.jaxb.CAction;
-import fede.workspace.tool.loadmodel.model.jaxb.CActionContributor;
-import fede.workspace.tool.loadmodel.model.jaxb.CAttType;
-import fede.workspace.tool.loadmodel.model.jaxb.CCadse;
-import fede.workspace.tool.loadmodel.model.jaxb.CCadseRef;
-import fede.workspace.tool.loadmodel.model.jaxb.CExtensionItemType;
-import fede.workspace.tool.loadmodel.model.jaxb.CItem;
-import fede.workspace.tool.loadmodel.model.jaxb.CItemType;
-import fede.workspace.tool.loadmodel.model.jaxb.CLinkType;
-import fede.workspace.tool.loadmodel.model.jaxb.CMenuAction;
-import fede.workspace.tool.loadmodel.model.jaxb.CMetaAttribute;
-import fede.workspace.tool.loadmodel.model.jaxb.CPage;
-import fede.workspace.tool.loadmodel.model.jaxb.CPages;
-import fede.workspace.tool.loadmodel.model.jaxb.CValuesType;
-import fede.workspace.tool.loadmodel.model.jaxb.CommitKindType;
-import fede.workspace.tool.loadmodel.model.jaxb.EvolutionDestinationKindType;
-import fede.workspace.tool.loadmodel.model.jaxb.EvolutionKindType;
-import fede.workspace.tool.loadmodel.model.jaxb.ObjectFactory;
-import fede.workspace.tool.loadmodel.model.jaxb.UpdateKindType;
-import fede.workspace.tool.loadmodel.model.jaxb.ValueTypeType;
 import fr.imag.adele.cadse.core.CadseDomain;
 import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseGCST;
 import fr.imag.adele.cadse.core.CadseRuntime;
-import fr.imag.adele.cadse.core.CompactUUID;
+import java.util.UUID;
 import fr.imag.adele.cadse.core.DefaultItemManager;
 import fr.imag.adele.cadse.core.IItemFactory;
 import fr.imag.adele.cadse.core.IItemManager;
@@ -91,7 +69,7 @@ import fr.imag.adele.cadse.core.enumdef.TWEvol;
 import fr.imag.adele.cadse.core.enumdef.TWUpdateKind;
 import fr.imag.adele.cadse.core.impl.AbstractLinkTypeManager;
 import fr.imag.adele.cadse.core.impl.CadseCore;
-import fr.imag.adele.cadse.core.impl.CadseIllegalArgumentException;
+import fr.imag.adele.cadse.core.CadseIllegalArgumentException;
 import fr.imag.adele.cadse.core.impl.ReflectLink;
 import fr.imag.adele.cadse.core.impl.attribute.BooleanAttributeType;
 import fr.imag.adele.cadse.core.impl.attribute.DateAttributeType;
@@ -114,17 +92,35 @@ import fr.imag.adele.cadse.core.ui.IActionContributor;
 import fr.imag.adele.cadse.core.ui.IPageFactory;
 import fr.imag.adele.cadse.core.ui.MenuAction;
 import fr.imag.adele.cadse.core.ui.PageFactory;
-import fr.imag.adele.cadse.core.util.Assert;
+import fr.imag.adele.cadse.util.Assert;
 import fr.imag.adele.cadse.core.util.Convert;
 import fr.imag.adele.cadse.workspace.as.classreferencer.IClassReferencer;
 import fr.imag.adele.cadse.workspace.as.loadfactory.ILoadFactory;
-import fr.imag.adele.fede.workspace.as.initmodel.IInitModel;
+import fr.imag.adele.fede.workspace.as.initmodel.ErrorWhenLoadedModel;
 import fr.imag.adele.fede.workspace.as.initmodel.InitModelLoadAndWrite;
-import fr.imag.adele.fede.workspace.as.platformeclipse.IPlatformEclipse;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAbsItemType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAction;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CActionContributor;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAttType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CCadse;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CCadseRef;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CExtensionItemType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItem;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItemType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CLinkType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CMenuAction;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CMetaAttribute;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CValuesType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CommitKindType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.EvolutionDestinationKindType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.EvolutionKindType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.UpdateKindType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.ValueTypeType;
 import fr.imag.adele.fede.workspace.si.initmodel.internal.ModelRepository;
 import fr.imag.adele.melusine.as.findmodel.CheckModel;
 import fr.imag.adele.melusine.as.findmodel.IFindModel;
 import fr.imag.adele.melusine.as.findmodel.ModelEntry;
+import com.sun.xml.bind.v2.ContextFactory;
 
 /**
  * @generated
@@ -153,10 +149,10 @@ public class InitModelImpl {
 	class InitContext {
 
 		/** The item types. */
-		Map<CompactUUID, CItemType>	itemTypes;
+		Map<UUID, CItemType>	itemTypes;
 
 		/** The cache items. */
-		Map<CompactUUID, ItemType>	cacheItems;
+		Map<UUID, ItemType>	cacheItems;
 
 		/** The values_to_field. */
 		Map<String, Object>			values_to_field;
@@ -185,7 +181,7 @@ public class InitModelImpl {
 		}
 
 		public void reset() {
-			cacheItems = new HashMap<CompactUUID, ItemType>();
+			cacheItems = new HashMap<UUID, ItemType>();
 			values_to_field = new HashMap<String, Object>();
 			initLink = new ArrayList<ItemType>();
 		}
@@ -258,8 +254,8 @@ public class InitModelImpl {
 				if (findC == null) {
 					cr.addError("Cannot find the cadse " + ref.getName());
 					try {
-						findC = (CadseRuntime) wsDomain.createUnresolvedItem(CadseGCST.CADSE, ref.getName(), new CompactUUID(ref.getId()));
-						findC.setIdCadseDefinition(new CompactUUID(ref.getIdCadseDefinition()));
+						findC = (CadseRuntime) wsDomain.createUnresolvedItem(CadseGCST.CADSE, ref.getName(), UUID.fromString(ref.getId()));
+						findC.setIdCadseDefinition( UUID.fromString(ref.getIdCadseDefinition()));
 					} catch (IllegalArgumentException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -513,7 +509,7 @@ public class InitModelImpl {
 
 		List<CExtensionItemType> extItemTypes = ccadse.getExtItemType();
 		for (CExtensionItemType extit : extItemTypes) {
-			CompactUUID uuid = getUUID(extit.getItemTypeSource());
+			UUID uuid = getUUID(extit.getItemTypeSource());
 			ItemType it = cxt.cacheItems.get(uuid);
 			if (it == null) {
 				it = theWorkspaceLogique.getItemType(uuid);
@@ -736,7 +732,7 @@ public class InitModelImpl {
 	}
 
 	/** The string_to_uuid. */
-	Map<String, CompactUUID>	string_to_uuid;
+	Map<String, UUID>	string_to_uuid;
 
 	/**
 	 * Gets the uUID.
@@ -746,16 +742,16 @@ public class InitModelImpl {
 	 * 
 	 * @return the uUID
 	 */
-	public CompactUUID getUUID(String id) {
+	public UUID getUUID(String id) {
 		if (id == null) {
 			return null;
 		}
 		if (string_to_uuid == null) {
-			string_to_uuid = new HashMap<String, CompactUUID>();
+			string_to_uuid = new HashMap<String, UUID>();
 		}
-		CompactUUID ret = string_to_uuid.get(id);
+		UUID ret = string_to_uuid.get(id);
 		if (ret == null) {
-			ret = new CompactUUID(id);
+			ret = UUID.fromString(id);
 			string_to_uuid.put(id, ret);
 		}
 		return ret;
@@ -779,7 +775,7 @@ public class InitModelImpl {
 		if (name == null || name.length() == 0) {
 			return null;
 		}
-		CompactUUID uuid = getUUID(name);
+		UUID uuid = getUUID(name);
 		return getItemType(false, currentModelType, uuid, cxt);
 	}
 
@@ -796,7 +792,7 @@ public class InitModelImpl {
 	 * @return the item type
 	 * @throws CadseException 
 	 */
-	private ItemType getItemType(boolean nosuper, LogicalWorkspace theWorkspaceLogique, CompactUUID itemTypeId,
+	private ItemType getItemType(boolean nosuper, LogicalWorkspace theWorkspaceLogique, UUID itemTypeId,
 			InitContext cxt) throws CadseException {
 		ItemType it = cxt.cacheItems.get(itemTypeId);
 		if (it != null) {
@@ -1059,7 +1055,7 @@ public class InitModelImpl {
 			it_manager = new DefaultItemManager();
 		}
 		ItemType metaType = CadseCore.theItemType;
-		CompactUUID metaTypeUUID = getUUID(cit.getMetaType());
+		UUID metaTypeUUID = getUUID(cit.getMetaType());
 		if (metaTypeUUID != null) {
 			metaType = theWorkspaceLogique.getItemType(metaTypeUUID);
 		}
@@ -1102,8 +1098,14 @@ public class InitModelImpl {
 		List<CMetaAttribute> metaAttributes = cit.getMetaAttribute();
 		for (CMetaAttribute ma : metaAttributes) {
 			try {
+				IAttributeType<?> attribute = findAttribute(it, ma.getKey());
+				if (attribute == null) {
+					_logger.log(Level.SEVERE, MessageFormat.format("Cannot find attribute for type {0} an attribute {1}.", it
+							.getName(), ma.getKey()));
+					continue;
+				}
 				ma.getValue().setKey(ma.getKey());
-				it.setAttribute(ma.getKey(), convertToCValue(ma.getValue(), null));
+				it.setAttribute(attribute, convertToCValue(ma.getValue(), null));
 			} catch (Throwable e) {
 				_logger.log(Level.SEVERE, MessageFormat.format("Cannot create for type {0} an attribute {1}.", it
 						.getName(), ma.getKey()), e);
@@ -1148,6 +1150,20 @@ public class InitModelImpl {
 			}
 		}
 	}
+
+	private IAttributeType<?> findAttribute(ItemType it, String key) {
+	
+		IAttributeType<?> ret = null;
+		UUID attId = null;
+		try {
+			attId = UUID.fromString(key);
+		} catch(IllegalArgumentException e){
+			return it.getLocalAttributeType(key);
+		}
+		ret = it.getLocalAttributeType(attId);
+		return ret ;
+	}
+
 
 	private void initEvol(IAttributeType<? extends Object> att, CValuesType attType) {
 		TWCommitKind commitKind = convert(attType.getTwCommit());
@@ -1282,7 +1298,7 @@ public class InitModelImpl {
 		ItemType attributeType = null;
 		if (kind == null) {
 			try {
-				CompactUUID uuid = Convert.toUUID(type.getTypeName());
+				UUID uuid = Convert.toUUID(type.getTypeName());
 				if (uuid != null) {
 					attributeType = (ItemType) theWorkspaceLogique.getItem(uuid);
 
@@ -1306,9 +1322,9 @@ public class InitModelImpl {
 						throw new CadseException("cannot create type from {0}", type.getKey());
 					}
 
-					CompactUUID uuid;
+					UUID uuid;
 					try {
-						uuid = new CompactUUID(uuid_str);
+						uuid = UUID.fromString(uuid_str);
 					} catch (IllegalArgumentException e1) {
 						throw new CadseException("cannot create type from {0}", e1, type.getKey());
 					}
@@ -1319,7 +1335,7 @@ public class InitModelImpl {
 					LogicalWorkspaceTransaction copy = theWorkspaceLogique.createTransaction();
 					Item attType = copy.createItem(it, parent, CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES,
 							getUUID(type.getId()), null, null);
-					CompactUUID attTypeId = attType.getId();
+					UUID attTypeId = attType.getId();
 					List<CValuesType> elements = type.getElement();
 					if (elements != null) {
 						for (CValuesType e : elements) {
@@ -1409,9 +1425,9 @@ public class InitModelImpl {
 					throw new CadseException("cannot create type from {0}", type.getKey());
 				}
 
-				CompactUUID uuid;
+				UUID uuid;
 				try {
-					uuid = new CompactUUID(uuid_str);
+					uuid = UUID.fromString(uuid_str);
 				} catch (IllegalArgumentException e1) {
 					throw new CadseException("cannot create type from {0}", e1, type.getKey());
 				}
@@ -1422,17 +1438,17 @@ public class InitModelImpl {
 				LogicalWorkspaceTransaction copy = theWorkspaceLogique.createTransaction();
 				Item attType = copy.createItem(it, parent, CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES,
 						getUUID(type.getId()), null, null);
-				CompactUUID attTypeId = attType.getId();
+				UUID attTypeId = attType.getId();
 				List<CValuesType> elements = type.getElement();
 				if (elements != null) {
 					for (CValuesType e : elements) {
 						String c = e.getKey();
-						IAttributeType<?> att = it.getAttributeType(e.getKey());
+						IAttributeType<?> att = findAttribute(it, e.getKey());
 						if (att == null) {
 							continue;
 						}
 						Object value = att.convertTo(e.getValue());
-						attType.setAttribute(att.getName(), value);
+						attType.setAttribute(att, value);
 						// TODO set flag
 					}
 				}
@@ -1525,9 +1541,9 @@ public class InitModelImpl {
 		// from
 		// {0}",type.getKey());
 		//
-		// CompactUUID uuid;
+		// UUID uuid;
 		// try {
-		// uuid = new CompactUUID(uuid_str);
+		// uuid = new UUID(uuid_str);
 		// } catch (IllegalArgumentException e1) {
 		// throw new CadseException("cannot create type from {0}",e1,
 		// type.getKey());
@@ -1540,7 +1556,7 @@ public class InitModelImpl {
 		// CadseGCST.META_ITEM_TYPE_lt_ATTRIBUTES_DEFINITION,
 		// getUUID(type.getId()),
 		// null, null);
-		// CompactUUID attTypeId = attType.getId();
+		// UUID attTypeId = attType.getId();
 		// List<CValuesType> elements = type.getElement();
 		// if (elements != null) {
 		// for (CValuesType e : elements) {
@@ -1755,7 +1771,7 @@ public class InitModelImpl {
 		}
 
 		String inverse = linkType.getInverseLink();
-		CompactUUID uuid = getUUID(linkType.getDestination());
+		UUID uuid = getUUID(linkType.getDestination());
 		ItemType destType = currentModelType.getItemType(uuid);
 		if (destType == null) {
 			_logger.log(Level.SEVERE, "Cannot find item type " + linkType.getDestination());
@@ -1828,7 +1844,7 @@ public class InitModelImpl {
 	
 
 	public CCadse read(InputStream s) throws JAXBException {
-		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", this.getClass()
+		JAXBContext jc = JAXBContext.newInstance("fr.imag.adele.fede.workspace.as.initmodel.jaxb", this.getClass()
 				.getClassLoader());
 		Unmarshaller m = jc.createUnmarshaller();
 		return (CCadse) m.unmarshal(s);
@@ -1839,7 +1855,7 @@ public class InitModelImpl {
 	}
 
 	public void save(CCadse cadse, File file) throws JAXBException, FileNotFoundException {
-		JAXBContext jc = JAXBContext.newInstance("fede.workspace.tool.loadmodel.model.jaxb", this.getClass()
+		JAXBContext jc = JAXBContext.newInstance("fr.imag.adele.fede.workspace.as.initmodel.jaxb", this.getClass()
 				.getClassLoader());
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -1869,7 +1885,7 @@ public class InitModelImpl {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToAttributeType(fede.workspace.tool.loadmodel.model.jaxb.CAttType)
+	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToAttributeType(fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAttType)
 	 */
 	public IAttributeType<?> convertToAttributeType(CAttType attType, Item parent, String cadseName) {
 		LogicalWorkspace wl = CadseCore.getLogicalWorkspace();
@@ -1898,7 +1914,7 @@ public class InitModelImpl {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToAttributeType(fede.workspace.tool.loadmodel.model.jaxb.CValuesType)
+	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToAttributeType(fr.imag.adele.fede.workspace.as.initmodel.jaxb.CValuesType)
 	 */
 	public IAttributeType<?> convertToAttributeType(CValuesType attType) {
 		// TODO Auto-generated method stub
@@ -1928,7 +1944,7 @@ public class InitModelImpl {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToItemType(fede.workspace.tool.loadmodel.model.jaxb.CItemType)
+	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToItemType(fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItemType)
 	 */
 	public ItemType convertToItemType(CItemType itemType) {
 		// TODO Auto-generated method stub
@@ -1938,7 +1954,7 @@ public class InitModelImpl {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToCValue(fede.workspace.tool.loadmodel.model.jaxb.CValuesType,
+	 * @see fr.imag.adele.fede.workspace.as.initmodel.IInitModel#convertToCValue(fr.imag.adele.fede.workspace.as.initmodel.jaxb.CValuesType,
 	 *      fr.imag.adele.cadse.core.attribute.IAttributeType)
 	 */
 	public Object convertToCValue(CValuesType value, IAttributeType<?> attDefinition) {
