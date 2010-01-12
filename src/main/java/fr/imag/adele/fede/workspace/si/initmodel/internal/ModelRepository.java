@@ -33,11 +33,11 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
-import fede.workspace.role.initmodel.ErrorWhenLoadedModel;
-import fede.workspace.tool.loadmodel.model.jaxb.CCadse;
-import fede.workspace.tool.loadmodel.model.jaxb.CItemType;
-import fr.imag.adele.cadse.core.CompactUUID;
-import fr.imag.adele.cadse.core.internal.Nullable;
+import java.util.UUID;
+import fr.imag.adele.cadse.util.Nullable;
+import fr.imag.adele.fede.workspace.as.initmodel.ErrorWhenLoadedModel;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CCadse;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItemType;
 import fr.imag.adele.fede.workspace.si.initmodel.InitModel;
 import fr.imag.adele.fede.workspace.si.initmodel.InitModelImpl;
 import fr.imag.adele.melusine.as.findmodel.CheckModel;
@@ -74,7 +74,7 @@ public class ModelRepository  {
 
 	// private CItemType loadedWt = null;
 	/** The type map. */
-	private Map<CompactUUID, CItemType>	typeMap;
+	private Map<UUID, CItemType>	typeMap;
 
 	/** The model. */
 	private ModelEntry					model;
@@ -151,7 +151,7 @@ public class ModelRepository  {
 //	 * 
 //	 * @return the unmodifiable map of the type
 //	 */
-//	public Map<CompactUUID, CItemType> getTypes() {
+//	public Map<UUID, CItemType> getTypes() {
 //		return Collections.unmodifiableMap(typeMap);
 //	}
 
@@ -181,7 +181,7 @@ public class ModelRepository  {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	private void read(InitModelImpl initModel, InputStream s) throws JAXBException, IOException {
-		typeMap = new HashMap<CompactUUID, CItemType>();
+		typeMap = new HashMap<UUID, CItemType>();
 		cadse = initModel.read(s);
 		List<CItemType> types = cadse.getItemType();
 		for (CItemType it : types) {
@@ -254,8 +254,8 @@ public class ModelRepository  {
 	 * 
 	 * @return the item type
 	 */
-	public Map<CompactUUID, CItemType> getItemType() {
-		return new HashMap<CompactUUID, CItemType>(this.typeMap);
+	public Map<UUID, CItemType> getItemType() {
+		return new HashMap<UUID, CItemType>(this.typeMap);
 	}
 
 //	/**
