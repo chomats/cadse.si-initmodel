@@ -207,7 +207,8 @@ public class InitModelImpl {
 		if (wsDomain == null) throw new CadseIllegalArgumentException("Cannot find cadse domain service");
 		long start = System.currentTimeMillis();
 		LogicalWorkspace theWorkspaceLogique = wsDomain.getLogicalWorkspace();
-
+		if (theWorkspaceLogique == null) throw new CadseIllegalArgumentException("Cannot find cadse domain service");
+		
 		HashMap<String, CadseRuntime> theCadsesLoadedList = new HashMap<String, CadseRuntime>();
 		HashMap<CadseRuntime, List<CCadseRef>> theCadsesLoadedListRef = new HashMap<CadseRuntime, List<CCadseRef>>();
 
@@ -501,6 +502,9 @@ public class InitModelImpl {
 				try {
 					createLinkType(theWorkspaceLogique, source, linkType, cxt);
 				} catch (CadseException e) {
+					_logger.log(Level.SEVERE, "Cannot create link type " + link.getCstName(), e);
+					cadse.addError("Cannot create link type " + link.getCstName() + " : " + e.getMessage());
+				} catch (CadseIllegalArgumentException e) {
 					_logger.log(Level.SEVERE, "Cannot create link type " + link.getCstName(), e);
 					cadse.addError("Cannot create link type " + link.getCstName() + " : " + e.getMessage());
 				}
