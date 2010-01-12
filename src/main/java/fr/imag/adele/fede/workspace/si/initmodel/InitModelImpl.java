@@ -207,7 +207,10 @@ public class InitModelImpl {
 		if (wsDomain == null) throw new CadseIllegalArgumentException("Cannot find cadse domain service");
 		long start = System.currentTimeMillis();
 		LogicalWorkspace theWorkspaceLogique = wsDomain.getLogicalWorkspace();
-		if (theWorkspaceLogique == null) throw new CadseIllegalArgumentException("Cannot find cadse domain service");
+		//TODO add a timeout
+		while (theWorkspaceLogique == null) {
+			theWorkspaceLogique = wsDomain.getLogicalWorkspace();
+		}
 		
 		HashMap<String, CadseRuntime> theCadsesLoadedList = new HashMap<String, CadseRuntime>();
 		HashMap<CadseRuntime, List<CCadseRef>> theCadsesLoadedListRef = new HashMap<CadseRuntime, List<CCadseRef>>();
