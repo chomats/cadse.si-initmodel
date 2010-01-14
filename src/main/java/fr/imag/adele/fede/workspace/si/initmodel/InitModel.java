@@ -29,27 +29,27 @@ public class InitModel implements IInitModel {
 	/**
 	 * @generated
 	 */
-	CadseDomain					workspaceCU;
+	public CadseDomain					workspaceCU;
 
 	/**
 	 * @generated
 	 */
-	IFindModel					findModel;
+	public IFindModel					findModel;
 
 	/**
 	 * @generated
 	 */
-	ILoadFactory[]				loadFactories;
+	public ILoadFactory[]				loadFactories;
 
 	/**
 	 * @generated
 	 */
-	IClassReferencer			classReferencer;
+	public IClassReferencer			classReferencer;
 
 	/**
 	 * @generated
 	 */
-	IPlatformIDE			platformService;
+	public IPlatformIDE			platformService;
 
 	
 	
