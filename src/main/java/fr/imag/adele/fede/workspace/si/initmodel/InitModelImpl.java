@@ -646,9 +646,9 @@ public class InitModelImpl {
 			classInstance = contributingBundle.loadClass(className);
 			return classInstance;
 		} catch (Exception e) {
-			_logger.log(Level.SEVERE, "Cannot load " + className + " from " + contributorName, e);
+			_logger.log(Level.SEVERE, "Cannot load " + className + " from " + contributorName+": "+e.getClass().getSimpleName());
 		} catch (LinkageError e) {
-			_logger.log(Level.SEVERE, "Cannot load " + className + " from " + contributorName, e);
+			_logger.log(Level.SEVERE, "Cannot load " + className + " from " + contributorName+": "+e.getClass().getSimpleName());
 		}
 		return null;
 	}
