@@ -751,7 +751,7 @@ public class InitModelImpl {
 	 */
 	public UUID getUUID(String id) {
 		if (id == null) {
-			return null;
+			return UUID.randomUUID();
 		}
 		if (string_to_uuid == null) {
 			string_to_uuid = new HashMap<String, UUID>();
