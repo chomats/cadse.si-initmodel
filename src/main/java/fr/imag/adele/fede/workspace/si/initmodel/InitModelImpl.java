@@ -905,7 +905,7 @@ public class InitModelImpl {
 	 * 
 	 * @return the uRL
 	 */
-	private URL url(String iconFile, InitContext cxt) {
+	private String url(String iconFile, InitContext cxt) {
 		if (iconFile == null || iconFile.length() == 0) {
 			return null;
 		}
@@ -921,12 +921,8 @@ public class InitModelImpl {
 			_logger.log(Level.SEVERE, "Cannot load icon : " + iconFile + " bundle not found " + bundleId);
 			return null;
 		}
-		URL url = bundle.getEntry(iconFile);
-		if (url == null) {
-			_logger.log(Level.SEVERE, "Cannot create the url : " + iconFile);
-			return null;
-		}
-		return url;
+		
+		return "platform:/plugin/"+bundle.getSymbolicName()+"/"+iconFile;
 
 	}
 
