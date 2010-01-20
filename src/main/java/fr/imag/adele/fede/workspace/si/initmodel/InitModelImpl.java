@@ -110,6 +110,7 @@ import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItemType;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CLinkType;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CMenuAction;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CMetaAttribute;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CPages;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CValuesType;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CommitKindType;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.EvolutionDestinationKindType;
@@ -870,6 +871,12 @@ public class InitModelImpl {
 //			it.addModificationPages(modificationPages);
 //		}
 
+		CPages creationPagesInfo = cit.getCreationPages();
+		if (creationPagesInfo != null && cit instanceof CItemType) {
+			it.setCreationAction(null, creationPagesInfo.getDefaultShortName());
+		}
+		
+		
 		List<IMenuAction> genActions = new ArrayList<IMenuAction>();
 		List<CMenuAction> menuactions = cit.getMenu();
 		for (CMenuAction action : menuactions) {
