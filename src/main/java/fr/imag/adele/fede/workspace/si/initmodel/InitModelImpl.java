@@ -53,6 +53,7 @@ import fr.imag.adele.cadse.core.CadseGCST;
 import fr.imag.adele.cadse.core.CadseRuntime;
 import java.util.UUID;
 import fr.imag.adele.cadse.core.DefaultItemManager;
+import fr.imag.adele.cadse.core.ExtendedType;
 import fr.imag.adele.cadse.core.IItemFactory;
 import fr.imag.adele.cadse.core.IItemManager;
 import fr.imag.adele.cadse.core.ILinkTypeManager;
@@ -62,6 +63,7 @@ import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.Link;
 import fr.imag.adele.cadse.core.LinkType;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
+import fr.imag.adele.cadse.core.TypeDefinition;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
 import fr.imag.adele.cadse.core.enumdef.TWCommitKind;
 import fr.imag.adele.cadse.core.enumdef.TWDestEvol;
@@ -517,19 +519,24 @@ public class InitModelImpl {
 
 		List<CExtensionItemType> extItemTypes = ccadse.getExtItemType();
 		for (CExtensionItemType extit : extItemTypes) {
-			UUID uuid = getUUID(extit.getItemTypeSource());
-			ItemType it = cxt.cacheItems.get(uuid);
-			if (it == null) {
-				it = theWorkspaceLogique.getItemType(uuid);
+			ExtendedType et = getExtendedType(theWorkspaceLogique, getUUID(extit.getId()), cxt, extit);
+			
+			if (extit.getItemTypeSource() != null) {
+				UUID uuid = getUUID(extit.getItemTypeSource());
+				ItemType it = cxt.cacheItems.get(uuid);
+				if (it == null) {
+					it = theWorkspaceLogique.getItemType(uuid);
+				}
+				if (it == null) {
+					final String errorMsg = "Cannot load the extension for the type " + extit.getItemTypeSource();
+					_logger.log(Level.SEVERE, errorMsg);
+					cadse.addError(errorMsg);
+				} else {
+					et.addExendsItemType(it);
+				}
 			}
-			if (it == null) {
-				final String errorMsg = "Cannot load the extension for the type " + extit.getItemTypeSource();
-				_logger.log(Level.SEVERE, errorMsg);
-				cadse.addError(errorMsg);
-				continue;
-			}
-			loadAttributesDefinition2(theWorkspaceLogique, extit, cxt, it);
-			loadPageAndAction(cxt, it, extit);
+			loadAttributesDefinition2(theWorkspaceLogique, extit, cxt, et);
+			loadPageAndAction(cxt, et, extit);
 			List<CLinkType> links = extit.getOutgoingLink();
 			for (CLinkType link : links) {
 				if (!(link instanceof CLinkType)) {
@@ -538,7 +545,7 @@ public class InitModelImpl {
 
 				CLinkType linkType = link;
 				try {
-					createLinkType(theWorkspaceLogique, it, linkType, cxt);
+					createLinkType(theWorkspaceLogique, et, linkType, cxt);
 				} catch (CadseException e) {
 					_logger.log(Level.SEVERE, "Cannot create link type " + link.getCstName(), e);
 					cadse.addError("Cannot create link type " + link.getCstName() + " : " + e.getMessage());
@@ -834,6 +841,34 @@ public class InitModelImpl {
 		return it;
 	}
 	
+	/**
+	 * Gets the item type.
+	 * 
+	 * @param theWorkspaceLogique
+	 *            the the workspace logique
+	 * @param itemTypeId
+	 *            the name
+	 * @param cxt
+	 *            the cxt
+	 * 
+	 * @return the item type
+	 * @throws CadseException 
+	 */
+	private ExtendedType getExtendedType(LogicalWorkspace theWorkspaceLogique, UUID itemTypeId,
+			InitContext cxt, CExtensionItemType cit) throws CadseException {
+		ExtendedType it = null;
+		
+		
+		it = createExtendedType(theWorkspaceLogique, cit, cxt);
+		String cstName = cit.getCstName();
+		if (cxt.loadclass && cstName != null) {
+			it.setCSTName(cstName);
+			cxt.values_to_field.put(cstName, it);
+		}	
+		
+		return it;
+	}
+	
 	private void setSuperTypeAfter(LogicalWorkspace theWorkspaceLogique, ItemType it,
 			InitContext cxt) throws CadseException {
 		CItemType cit = cxt.itemTypes.get(it.getId());
@@ -851,7 +886,7 @@ public class InitModelImpl {
 	 * @param cit
 	 *            the cit
 	 */
-	private void loadPageAndAction(InitContext cxt, ItemType it, CAbsItemType cit) {
+	private void loadPageAndAction(InitContext cxt, TypeDefinition it, CAbsItemType cit) {
 //		CPages creationPagesInfo = cit.getCreationPages();
 //		List<IPageFactory> creationPages = loadPages(it, cxt, creationPagesInfo);
 //		List<IPageFactory> modificationPages = loadPages(it, cxt, cit.getModificationPages());
@@ -873,7 +908,7 @@ public class InitModelImpl {
 
 		CPages creationPagesInfo = cit.getCreationPages();
 		if (creationPagesInfo != null && cit instanceof CItemType) {
-			it.setCreationAction(null, creationPagesInfo.getDefaultShortName());
+			((ItemType) it).setCreationAction(null, creationPagesInfo.getDefaultShortName());
 		}
 		
 		
@@ -1036,7 +1071,39 @@ public class InitModelImpl {
 		}
 
 	}
+	/**
+	 * Creates the item type.
+	 * 
+	 * @param theWorkspaceLogique
+	 *            the the workspace logique
+	 * @param cit
+	 *            the cit
+	 * @param super_it
+	 *            the super_it
+	 * @param cxt
+	 *            the cxt
+	 * 
+	 * @return the item type
+	 */
+	private ExtendedType createExtendedType(LogicalWorkspace theWorkspaceLogique, CExtensionItemType cit,
+			InitContext cxt) {
+		ExtendedType it;
+		
+		ItemType metaType = CadseGCST.EXT_ITEM_TYPE;
+		UUID metaTypeUUID = getUUID(cit.getMetaType());
+		if (metaTypeUUID != null) {
+			metaType = theWorkspaceLogique.getItemType(metaTypeUUID);
+		}
 
+		it = theWorkspaceLogique.createExtendedType(metaType, cxt.currentCadseName, getUUID(cit
+				.getId()), cit.getQualifiedName(), cit.getName());
+		
+		it.setIsStatic(true);
+		it.setPackageName(cit.getPackageName());
+
+		return it;
+	}
+	
 	/**
 	 * Creates the item type.
 	 * 
@@ -1091,7 +1158,7 @@ public class InitModelImpl {
 		return it;
 	}
 
-	private void loadAttributesDefinition(LogicalWorkspace theWorkspaceLogique, CItemType cit, InitContext cxt, ItemType it) {
+	private void loadAttributesDefinition(LogicalWorkspace theWorkspaceLogique, CItemType cit, InitContext cxt, TypeDefinition it) {
 		loadAttributesDefinition2(theWorkspaceLogique, cit, cxt, it);
 		for (CItem item : cit.getAttributeDefinition()) {
 			Item loadedItem = loadItem(theWorkspaceLogique, item);
@@ -1104,7 +1171,7 @@ public class InitModelImpl {
 	}
 
 	private void loadAttributesDefinition2(LogicalWorkspace theWorkspaceLogique, CAbsItemType cit, InitContext cxt,
-			ItemType it) {
+			TypeDefinition it) {
 		List<CMetaAttribute> metaAttributes = cit.getMetaAttribute();
 		for (CMetaAttribute ma : metaAttributes) {
 			try {
@@ -1161,7 +1228,7 @@ public class InitModelImpl {
 		}
 	}
 
-	private IAttributeType<?> findAttribute(ItemType it, String key) {
+	private IAttributeType<?> findAttribute(TypeDefinition it, String key) {
 	
 		IAttributeType<?> ret = null;
 		UUID attId = null;
@@ -1301,7 +1368,7 @@ public class InitModelImpl {
 	 * @return the i attribute type<? extends object>
 	 * @throws CadseException
 	 */
-	public IAttributeType<?> createAttrituteType(LogicalWorkspace theWorkspaceLogique, ItemType parent,
+	public IAttributeType<?> createAttrituteType(LogicalWorkspace theWorkspaceLogique, TypeDefinition parent,
 			CValuesType type, String cadseName) throws CadseException {
 
 		ValueTypeType kind = type.getType(); // kind peut etre null...
@@ -1751,7 +1818,7 @@ public class InitModelImpl {
 	 * @return
 	 * @throws CadseException
 	 */
-	private LinkType createLinkType(LogicalWorkspace currentModelType, ItemType source, CLinkType linkType,
+	private LinkType createLinkType(LogicalWorkspace currentModelType, TypeDefinition source, CLinkType linkType,
 			InitContext cxt) throws CadseException {
 		int kind = 0;
 		if (linkType.isIsAggregation()) {
@@ -1782,7 +1849,7 @@ public class InitModelImpl {
 
 		String inverse = linkType.getInverseLink();
 		UUID uuid = getUUID(linkType.getDestination());
-		ItemType destType = currentModelType.getItemType(uuid);
+		TypeDefinition destType = currentModelType.getItemType(uuid);
 		if (destType == null) {
 			_logger.log(Level.SEVERE, "Cannot find item type " + linkType.getDestination());
 			throw new CadseException("Cannot find the item type {0}.", linkType.getDestination());
