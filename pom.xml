@@ -27,7 +27,7 @@
                   	 <instructions>
                         <Export-Package>fr.imag.adele.fede.workspace.si.initmodel;version="${version.cadse}"</Export-Package>
                         <Private-Package>fr.imag.adele.fede.workspace.si.initmodel.internal</Private-Package>
-                        <Import-Package>javax.xml.bind*;version=!,com.sun.xml.bind.v2;version=!, fr.imag.adele.fede.workspace.as.initmodel.jaxb, *</Import-Package>
+                        <Import-Package>javax.xml.bind*;version=!, fr.imag.adele.fede.workspace.as.initmodel.jaxb, *</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -61,11 +61,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>as.cu</artifactId>
-        </dependency>
-        <dependency>
-        	<groupId>com.sun.xml.bind</groupId>
-        	<artifactId>jaxb-impl</artifactId>
-        	<version>2.2</version>
         </dependency>
     </dependencies>
 </project>
