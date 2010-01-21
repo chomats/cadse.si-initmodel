@@ -193,12 +193,13 @@ public class InitModelImpl {
 	}
 
 	public CadseRuntime[] loadCadses() {
-		CadseDomain wsDomain = _initModel.getWorkspaceCU();
-		if (wsDomain == null) throw new CadseIllegalArgumentException("Cannot find cadse domain service");
 		long start = System.currentTimeMillis();
-		LogicalWorkspace theWorkspaceLogique = wsDomain.getLogicalWorkspace();
+		LogicalWorkspace theWorkspaceLogique = null;
+		CadseDomain wsDomain = null;
 		//TODO add a timeout
 		while (theWorkspaceLogique == null) {
+			wsDomain = _initModel.getWorkspaceCU();
+			if (wsDomain == null) continue;
 			theWorkspaceLogique = wsDomain.getLogicalWorkspace();
 		}
 		
