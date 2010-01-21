@@ -185,7 +185,7 @@ public class ModelRepository  {
 		cadse = initModel.read(s);
 		List<CItemType> types = cadse.getItemType();
 		for (CItemType it : types) {
-			typeMap.put(initModel.getUUID(it.getId()), it);
+			typeMap.put(initModel.getUUID(it.getId(), false, false), it);
 		}
 
 	}

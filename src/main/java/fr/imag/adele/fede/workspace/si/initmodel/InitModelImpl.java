@@ -318,7 +318,7 @@ public class InitModelImpl {
 		CCadse ccadse = repository.load(this);
 
 		CadseRuntime newCadseRuntime = theWorkspaceLogique.createCadseRuntime(ccadse.getName(),
-				getUUID(ccadse.getId()), getUUID(ccadse.getIdCadseDefinition()));
+				getUUID(ccadse.getId(), false, false), getUUID(ccadse.getIdCadseDefinition(), false, false));
 		newCadseRuntime.setIsStatic(true);
 		newCadseRuntime.setFlag(Item.IS_HIDDEN, true);
 		newCadseRuntime.setVersion(ccadse.getVersion());
@@ -464,7 +464,7 @@ public class InitModelImpl {
 					_logger.info("Load attributes linktype");
 					absAttributeType = linkType;
 					// load destination
-					getItemType(true, theWorkspaceLogique, getUUID(linkType.getDestination()), cxt);
+					getItemType(true, theWorkspaceLogique, getUUID(linkType.getDestination(), false, false), cxt);
 					// register this link type
 					CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES = createLinkType(theWorkspaceLogique, absIt, linkType, cxt);
 					break;
@@ -476,10 +476,12 @@ public class InitModelImpl {
 			CadseCore.theLinkType.addIncomingLink(
 					new ReflectLink(CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES, CadseCore.theItemType, CadseCore.theLinkType, -1), false);
 			
-			
+			UUID extID = new UUID(3947670889879978215L, -5294066852253207685L); //36c8f1c2-3972-40e7-b687-b23f3e46f37b
+			//EXT_ITEM_TYPE
+			CadseGCST.EXT_ITEM_TYPE = getItemType(false, theWorkspaceLogique, extID, cxt);
 		}
 		for (CItemType cit : cxt.itemTypes.values()) {
-			getItemType(false, theWorkspaceLogique, getUUID(cit.getId()), cxt);
+			getItemType(false, theWorkspaceLogique, getUUID(cit.getId(), false, false), cxt);
 		}
 
 		
@@ -519,10 +521,10 @@ public class InitModelImpl {
 
 		List<CExtensionItemType> extItemTypes = ccadse.getExtItemType();
 		for (CExtensionItemType extit : extItemTypes) {
-			ExtendedType et = getExtendedType(theWorkspaceLogique, getUUID(extit.getId()), cxt, extit);
+			ExtendedType et = getExtendedType(theWorkspaceLogique, getUUID(extit.getId(), false, false), cxt, extit);
 			
 			if (extit.getItemTypeSource() != null) {
-				UUID uuid = getUUID(extit.getItemTypeSource());
+				UUID uuid = getUUID(extit.getItemTypeSource(), false, false);
 				ItemType it = cxt.cacheItems.get(uuid);
 				if (it == null) {
 					it = theWorkspaceLogique.getItemType(uuid);
@@ -547,6 +549,9 @@ public class InitModelImpl {
 				try {
 					createLinkType(theWorkspaceLogique, et, linkType, cxt);
 				} catch (CadseException e) {
+					_logger.log(Level.SEVERE, "Cannot create link type " + link.getCstName(), e);
+					cadse.addError("Cannot create link type " + link.getCstName() + " : " + e.getMessage());
+				} catch (CadseIllegalArgumentException e) {
 					_logger.log(Level.SEVERE, "Cannot create link type " + link.getCstName(), e);
 					cadse.addError("Cannot create link type " + link.getCstName() + " : " + e.getMessage());
 				}
@@ -757,9 +762,10 @@ public class InitModelImpl {
 	 * 
 	 * @return the uUID
 	 */
-	public UUID getUUID(String id) {
+	public UUID getUUID(String id, boolean createNew, boolean canBeNull) {
 		if (id == null) {
-			return UUID.randomUUID();
+			if (!canBeNull) throw new CadseIllegalArgumentException("Id is null !!");
+			return createNew ? UUID.randomUUID() : null;
 		}
 		if (string_to_uuid == null) {
 			string_to_uuid = new HashMap<String, UUID>();
@@ -790,7 +796,7 @@ public class InitModelImpl {
 		if (name == null || name.length() == 0) {
 			return null;
 		}
-		UUID uuid = getUUID(name);
+		UUID uuid = getUUID(name, false, false);
 		return getItemType(false, currentModelType, uuid, cxt);
 	}
 
@@ -1084,19 +1090,20 @@ public class InitModelImpl {
 	 *            the cxt
 	 * 
 	 * @return the item type
+	 * @throws CadseException 
 	 */
 	private ExtendedType createExtendedType(LogicalWorkspace theWorkspaceLogique, CExtensionItemType cit,
-			InitContext cxt) {
+			InitContext cxt) throws CadseException {
 		ExtendedType it;
 		
 		ItemType metaType = CadseGCST.EXT_ITEM_TYPE;
-		UUID metaTypeUUID = getUUID(cit.getMetaType());
+		UUID metaTypeUUID = getUUID(cit.getMetaType(), false, true);
 		if (metaTypeUUID != null) {
 			metaType = theWorkspaceLogique.getItemType(metaTypeUUID);
 		}
 
 		it = theWorkspaceLogique.createExtendedType(metaType, cxt.currentCadseName, getUUID(cit
-				.getId()), cit.getQualifiedName(), cit.getName());
+				.getId(), false, false), cit.getQualifiedName(), cit.getName());
 		
 		it.setIsStatic(true);
 		it.setPackageName(cit.getPackageName());
@@ -1132,13 +1139,13 @@ public class InitModelImpl {
 			it_manager = new DefaultItemManager();
 		}
 		ItemType metaType = CadseCore.theItemType;
-		UUID metaTypeUUID = getUUID(cit.getMetaType());
+		UUID metaTypeUUID = getUUID(cit.getMetaType(), false, true);
 		if (metaTypeUUID != null) {
 			metaType = theWorkspaceLogique.getItemType(metaTypeUUID);
 		}
 
 		it = theWorkspaceLogique.createItemType(metaType, cxt.currentCadseName, super_it, cit.getIntID(), getUUID(cit
-				.getId()), cit.getName(), cit.getDisplayName(), cit.isHasContent(), cit.isIsAbstract(), it_manager);
+				.getId(), false, false), cit.getName(), cit.getDisplayName(), cit.isHasContent(), cit.isIsAbstract(), it_manager);
 		String className = cit.getFactoryClass();
 		if (className != null) {
 			IItemFactory factory = newInstance(cxt.currentCadseName.getQualifiedName(), className);
@@ -1351,7 +1358,7 @@ public class InitModelImpl {
 	}
 
 	private Item loadItem(LogicalWorkspace theWorkspaceLogique, CItem item) {
-		ItemType it = theWorkspaceLogique.getItemType(getUUID(item.getType()));
+		ItemType it = theWorkspaceLogique.getItemType(getUUID(item.getType(), false, false));
 
 		// TODO Auto-generated method stub
 		return null;
@@ -1411,7 +1418,7 @@ public class InitModelImpl {
 					}
 					LogicalWorkspaceTransaction copy = theWorkspaceLogique.createTransaction();
 					Item attType = copy.createItem(it, parent, CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES,
-							getUUID(type.getId()), null, null);
+							getUUID(type.getId(), false, false), null, null);
 					UUID attTypeId = attType.getId();
 					List<CValuesType> elements = type.getElement();
 					if (elements != null) {
@@ -1485,7 +1492,7 @@ public class InitModelImpl {
 		if (kind == null) {
 			//
 			if ("3daef02c-3ef2-4c14-8ffa-ca98498039c3".equals(type.getTypeName())) {
-				UUIDAttributeType ret = new UUIDAttributeType(this.getUUID(type.getId()), type.getKey(), this
+				UUIDAttributeType ret = new UUIDAttributeType(this.getUUID(type.getId(), false, false), type.getKey(), this
 						.getFlag(type));
 				return ret;
 			}
@@ -1493,7 +1500,7 @@ public class InitModelImpl {
 		}
 		switch (kind) {
 			case UUID: {
-				UUIDAttributeType ret = new UUIDAttributeType(this.getUUID(type.getId()), type.getKey(), getFlag(type));
+				UUIDAttributeType ret = new UUIDAttributeType(this.getUUID(type.getId(), false, false), type.getKey(), getFlag(type));
 				return ret;
 			}
 			case ITEM: {
@@ -1514,7 +1521,7 @@ public class InitModelImpl {
 				}
 				LogicalWorkspaceTransaction copy = theWorkspaceLogique.createTransaction();
 				Item attType = copy.createItem(it, parent, CadseGCST.TYPE_DEFINITION_lt_ATTRIBUTES,
-						getUUID(type.getId()), null, null);
+						getUUID(type.getId(), false, false), null, null);
 				UUID attTypeId = attType.getId();
 				List<CValuesType> elements = type.getElement();
 				if (elements != null) {
@@ -1537,7 +1544,7 @@ public class InitModelImpl {
 				if (elements == null || elements.size() != 1) {
 					throw new CadseException("cannot create value from {0} : bad definition of list", type.getKey());
 				}
-				return new ListAttributeType(getUUID(type.getId()), getFlag(type), type.getKey(), getMin(type),
+				return new ListAttributeType(getUUID(type.getId(), false, false), getFlag(type), type.getKey(), getMin(type),
 						getMax(type), createAttrituteType(theWorkspaceLogique, null, elements.get(0), cadseName));
 			}
 //			case STRUCT: {
@@ -1561,28 +1568,28 @@ public class InitModelImpl {
 //						theWorkspaceLogique, null, elements.get(1), cadseName));
 //			}
 			case BOOLEAN: {
-				BooleanAttributeType ret = new BooleanAttributeType(getUUID(type.getId()), getFlag(type),
+				BooleanAttributeType ret = new BooleanAttributeType(getUUID(type.getId(), true, true), getFlag(type),
 						type.getKey(), type.getValue());
 				return ret;
 			}
 			case STRING: {
-				StringAttributeType ret = new StringAttributeType(getUUID(type.getId()), getFlag(type), type.getKey(),
+				StringAttributeType ret = new StringAttributeType(getUUID(type.getId(), true, true), getFlag(type), type.getKey(),
 						type.getValue());
 				return ret;
 			}
 			case INTEGER: {
-				IntegerAttributeType ret = new IntegerAttributeType(getUUID(type.getId()), getFlag(type),
+				IntegerAttributeType ret = new IntegerAttributeType(getUUID(type.getId(), true, true), getFlag(type),
 						type.getKey(), null, null, type.getValue());
 				return ret;
 			}
 			case DATE: {
-				DateAttributeType ret = new DateAttributeType(getUUID(type.getId()), getFlag(type), type.getKey(), type
+				DateAttributeType ret = new DateAttributeType(getUUID(type.getId(), true, true), getFlag(type), type.getKey(), type
 						.getValue());
 				return ret;
 			}
 
 			case DOUBLE: {
-				DoubleAttributeType ret = new DoubleAttributeType(getUUID(type.getId()), getFlag(type), type.getKey(),
+				DoubleAttributeType ret = new DoubleAttributeType(getUUID(type.getId(), true, true), getFlag(type), type.getKey(),
 						null, null, type.getValue());
 				return ret;
 			}
@@ -1597,7 +1604,7 @@ public class InitModelImpl {
 				if (clazz == null) {
 					throw new CadseException("cannot create type from {0}", type.getKey());
 				}
-				return new EnumAttributeType(getUUID(type.getId()), getFlag(type), type.getKey(), clazz, type
+				return new EnumAttributeType(getUUID(type.getId(), true, true), getFlag(type), type.getKey(), clazz, type
 						.getValue());
 			}
 //			case SYMBOLIC_BIT_MAP: {
@@ -1848,7 +1855,7 @@ public class InitModelImpl {
 		}
 
 		String inverse = linkType.getInverseLink();
-		UUID uuid = getUUID(linkType.getDestination());
+		UUID uuid = getUUID(linkType.getDestination(), false, false);
 		TypeDefinition destType = currentModelType.getItemType(uuid);
 		if (destType == null) {
 			_logger.log(Level.SEVERE, "Cannot find item type " + linkType.getDestination());
@@ -1871,10 +1878,10 @@ public class InitModelImpl {
 		}
 		LinkType lt;
 		if (inverselt != null) {
-			lt = source.createLinkType(getUUID(linkType.getId()), linkType.getIntID(), linkType.getName(), kind, min,
+			lt = source.createLinkType(getUUID(linkType.getId(), false, false), linkType.getIntID(), linkType.getName(), kind, min,
 					max, selection, inverselt);
 		} else {
-			lt = source.createLinkType(getUUID(linkType.getId()), linkType.getIntID(), linkType.getName(), kind, min,
+			lt = source.createLinkType(getUUID(linkType.getId(), false, false), linkType.getIntID(), linkType.getName(), kind, min,
 					max, selection, destType);
 			if (source == destType && inverse != null && inverse.length() > 0 && linkType.getName().equals(inverse)) {
 				lt.setInverseLinkType(lt);
@@ -1966,7 +1973,7 @@ public class InitModelImpl {
 	 */
 	public IAttributeType<?> convertToAttributeType(CAttType attType, Item parent, String cadseName) {
 		LogicalWorkspace wl = CadseCore.getLogicalWorkspace();
-		ItemType attTypeType = wl.getItemType(getUUID(attType.getType()));
+		ItemType attTypeType = wl.getItemType(getUUID(attType.getType(), false, false));
 		if (attTypeType == null) {
 			return null;
 		}

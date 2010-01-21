@@ -147,7 +147,7 @@ public class InitModel implements IInitModel {
 
 	@Override
 	public UUID getUUID(String id) {
-		return impl.getUUID(id);
+		return impl.getUUID(id, true, true);
 	}
 
 	@Override
