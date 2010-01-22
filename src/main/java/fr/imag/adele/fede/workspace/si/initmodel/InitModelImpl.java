@@ -2097,7 +2097,7 @@ public class InitModelImpl {
 		final String[] variants = buildVariants(bundleName);
 		for (int i = 0; i < variants.length; i++) {
 			Enumeration enumURL = loader.findEntries(path, variants[i], false);
-			if (!enumURL.hasMoreElements())
+			if (enumURL == null || !enumURL.hasMoreElements())
 				continue;
 
 			URL url = (URL) enumURL.nextElement();
