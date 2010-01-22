@@ -22,16 +22,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -130,6 +135,7 @@ public class InitModelImpl {
 
 	/** The m logger. */
 	static Logger				_logger			= Logger.getLogger("SI.Workspace.InitModel");
+
 
 	/**
 	 * The Class InitContext.
@@ -399,6 +405,9 @@ public class InitModelImpl {
 				_logger.log(Level.SEVERE, "Cannot start bundle " + cxt.currentCadseName, e);
 			}
 		}
+		Properties localizedLabels = loadProperties("model/", "labels", cxt.bundle);
+		cadse.setLocalizedLabels(localizedLabels);
+		
 		CLinkType rootMLT = null;
 		CLinkType absAttributeType = null;
 		if (root) {
@@ -2042,5 +2051,78 @@ public class InitModelImpl {
 		throw new IllegalArgumentException(MessageFormat.format("cannot create value from key:{0}, value:{1}", value
 				.getKey(), value.getValue()));
 
+	}
+	
+	private static final Object[]	EMPTY_ARGS				= new Object[0];
+	private static final String		EXTENSION				= ".properties";	//$NON-NLS-1$
+	private static String[]			nlSuffixes;
+	
+	/*
+	 * Build an array of property files to search. The returned array contains
+	 * the property fields in order from most specific to most generic. So, in
+	 * the FR_fr locale, it will return file_fr_FR.properties, then
+	 * file_fr.properties, and finally file.properties.
+	 */
+	private static String[] buildVariants(String root) {
+		if (nlSuffixes == null) {
+			// build list of suffixes for loading resource bundles
+			String nl = Locale.getDefault().toString();
+			ArrayList result = new ArrayList(4);
+			int lastSeparator;
+			while (true) {
+				result.add('_' + nl + EXTENSION);
+				lastSeparator = nl.lastIndexOf('_');
+				if (lastSeparator == -1) {
+					break;
+				}
+				nl = nl.substring(0, lastSeparator);
+			}
+			// add the empty suffix last (most general)
+			result.add(EXTENSION);
+			nlSuffixes = (String[]) result.toArray(new String[result.size()]);
+		}
+		root = root.replace('.', '/');
+		String[] variants = new String[nlSuffixes.length];
+		for (int i = 0; i < variants.length; i++) {
+			variants[i] = root + nlSuffixes[i];
+		}
+		return variants;
+	}
+	
+	public Properties loadProperties(final String path,
+			final String bundleName, Bundle loader) {
+		// search the variants from most specific to most general, since
+		// the MessagesProperties.put method will mark assigned fields
+		// to prevent them from being assigned twice
+		final String[] variants = buildVariants(bundleName);
+		for (int i = 0; i < variants.length; i++) {
+			Enumeration enumURL = loader.findEntries(path, variants[i], false);
+			if (!enumURL.hasMoreElements())
+				continue;
+
+			URL url = (URL) enumURL.nextElement();
+			InputStream input = null;
+
+			try {
+				input = url.openStream();
+				if (input == null) {
+					continue;
+				}
+				final Properties properties = new Properties();
+				properties.load(input);
+				return properties;
+			} catch (IOException e) {
+				_logger.log(Level.SEVERE, "Error loading " + variants[i], e); //$NON-NLS-1$
+			} finally {
+				if (input != null) {
+					try {
+						input.close();
+					} catch (IOException e) {
+						// ignore
+					}
+				}
+			}
+		}
+		return null;
 	}
 }
