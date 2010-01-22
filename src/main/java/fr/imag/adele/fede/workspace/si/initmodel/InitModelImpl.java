@@ -518,7 +518,7 @@ public class InitModelImpl {
 
 		List<CExtensionItemType> extItemTypes = ccadse.getExtItemType();
 		for (CExtensionItemType extit : extItemTypes) {
-			ExtendedType et = getExtendedType(theWorkspaceLogique, getUUID(extit.getId(), false, false), cxt, extit);
+			ExtendedType et = getExtendedType(theWorkspaceLogique, getUUID(extit.getId(), true, true), cxt, extit);
 			
 			if (extit.getItemTypeSource() != null) {
 				UUID uuid = getUUID(extit.getItemTypeSource(), false, false);
@@ -1100,7 +1100,7 @@ public class InitModelImpl {
 		}
 
 		it = theWorkspaceLogique.createExtendedType(metaType, cxt.currentCadseName, getUUID(cit
-				.getId(), false, false), cit.getQualifiedName(), cit.getName());
+				.getId(), true, true), cit.getQualifiedName(), cit.getName());
 		
 		it.setIsStatic(true);
 		it.setPackageName(cit.getPackageName());
