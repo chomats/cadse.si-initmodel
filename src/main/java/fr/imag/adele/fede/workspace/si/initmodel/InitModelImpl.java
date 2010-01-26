@@ -62,6 +62,7 @@ import fr.imag.adele.cadse.core.IItemFactory;
 import fr.imag.adele.cadse.core.IItemManager;
 import fr.imag.adele.cadse.core.ILinkTypeManager;
 import fr.imag.adele.cadse.core.IMenuAction;
+import fr.imag.adele.cadse.core.InitAction;
 import fr.imag.adele.cadse.core.Item;
 import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.Link;
@@ -570,7 +571,9 @@ public class InitModelImpl {
 		}
 		for (ItemType it : cxt.cacheItems.values()) {
 			try {
-				it.getItemManager().init();
+				IItemManager itemManager = it.getItemManager();
+				if (itemManager instanceof InitAction)
+					((InitAction) itemManager).init();
 			} catch (Throwable e) {
 				final String errorMsg = "Cannot init item type " + it.getDisplayName();
 				_logger.log(Level.SEVERE, errorMsg, e);
