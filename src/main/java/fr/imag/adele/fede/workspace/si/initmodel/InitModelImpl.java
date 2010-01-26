@@ -96,7 +96,8 @@ import fr.imag.adele.cadse.core.util.Convert;
 import fr.imag.adele.cadse.workspace.as.loadfactory.ILoadFactory;
 import fr.imag.adele.fede.workspace.as.initmodel.ErrorWhenLoadedModel;
 import fr.imag.adele.fede.workspace.as.initmodel.InitModelLoadAndWrite;
-import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAbsItemType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CExtBiding;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CTypeDefinition;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAction;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CActionContributor;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAttType;
@@ -555,6 +556,31 @@ public class InitModelImpl {
 				}
 			}
 		}
+		List<CExtBiding> binding = ccadse.getExtBinding();
+		for (CExtBiding cExtBiding : binding) {
+			UUID itUUID = getUUID(cExtBiding.getUuidIt(), false, false);
+			UUID extUUID = getUUID(cExtBiding.getUuidExt(), false, false);
+			ItemType it = cxt.cacheItems.get(itUUID);
+			if (it == null) {
+				it = theWorkspaceLogique.getItemType(itUUID);
+			}
+			if (it == null) {
+				final String errorMsg = "Cannot load the binding for the type " + cExtBiding.getUuidIt();
+				_logger.log(Level.SEVERE, errorMsg);
+				cadse.addError(errorMsg);
+				continue;
+			} else {
+				
+			}
+			ExtendedType et =  theWorkspaceLogique.getExtendedType(extUUID);
+			if (it == null) {
+				final String errorMsg = "Cannot load the binding for the ext type " + cExtBiding.getUuidExt();
+				_logger.log(Level.SEVERE, errorMsg);
+				cadse.addError(errorMsg);
+				continue;
+			} 
+			theWorkspaceLogique.addBinding(cadse, it, et);
+		}
 		if (cxt.loadclass) {
 			load(cxt, cstClass);
 		}
@@ -892,7 +918,7 @@ public class InitModelImpl {
 	 * @param cit
 	 *            the cit
 	 */
-	private void loadPageAndAction(InitContext cxt, TypeDefinition it, CAbsItemType cit) {
+	private void loadPageAndAction(InitContext cxt, TypeDefinition it, CTypeDefinition cit) {
 //		CPages creationPagesInfo = cit.getCreationPages();
 //		List<IPageFactory> creationPages = loadPages(it, cxt, creationPagesInfo);
 //		List<IPageFactory> modificationPages = loadPages(it, cxt, cit.getModificationPages());
@@ -1177,7 +1203,7 @@ public class InitModelImpl {
 		}
 	}
 
-	private void loadAttributesDefinition2(LogicalWorkspace theWorkspaceLogique, CAbsItemType cit, InitContext cxt,
+	private void loadAttributesDefinition2(LogicalWorkspace theWorkspaceLogique, CTypeDefinition cit, InitContext cxt,
 			TypeDefinition it) {
 		List<CMetaAttribute> metaAttributes = cit.getMetaAttribute();
 		for (CMetaAttribute ma : metaAttributes) {
@@ -1845,6 +1871,12 @@ public class InitModelImpl {
 		}
 		if (linkType.isHidden() != null && linkType.isHidden()) {
 			kind += LinkType.HIDDEN;
+		}
+		if (linkType.isIsGroup()) {
+			kind += LinkType.GROUP;
+		}
+		if (linkType.isIsMapping()) {
+			kind += LinkType.MAPPING;
 		}
 
 		int min = linkType.getMin();
