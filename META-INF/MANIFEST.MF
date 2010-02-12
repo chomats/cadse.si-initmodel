@@ -11,13 +11,13 @@ Export-Package: fr.imag.adele.fede.workspace.si.initmodel;uses:="fr.im
  tion,fr.imag.adele.cadse.core.impl.internal,fr.imag.adele.cadse.core.
  ui,fr.imag.adele.cadse.core.transaction.delta";version="2.3.0"
 Private-Package: fr.imag.adele.fede.workspace.si.initmodel.internal
-Built-By: chomats
+Built-By: etienne
 Tool: Bnd-0.0.357
 Bundle-Name: fr.imag.adele.cadse.si.initmodel
 Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Adele/LIG/ Grenoble University, France
-Build-Jdk: 1.6.0_17
-Bundle-Version: 2.3.0.SNAPSHOT
+Build-Jdk: 1.6.0_0
+Bundle-Version: 2.3.0.SNAPSHOT-201002121709
 Ipojo-auto-start: true
 Bundle-ManifestVersion: 2
 Bundle-Description: Cadse impl of init model
