@@ -938,10 +938,19 @@ public class InitModelImpl {
 //			it.addModificationPages(modificationPages);
 //		}
 
-		CPages creationPagesInfo = cit.getCreationPages();
-		if (creationPagesInfo != null && cit instanceof CItemType) {
-			((ItemType) it).setCreationAction(null, creationPagesInfo.getDefaultShortName());
+		if (cit instanceof CItemType) {
+			CItemType cit2 = (CItemType) cit;
+			String dsn = cit2.getDefaultShortName();
+			if (dsn != null) {
+				((ItemType) it).setCreationAction(null, dsn);
+			} else {
+				CPages creationPagesInfo = cit.getCreationPages();
+				if (creationPagesInfo != null && cit instanceof CItemType) {
+					((ItemType) it).setCreationAction(null, creationPagesInfo.getDefaultShortName());
+				} 
+			}
 		}
+		
 		
 		
 		List<IMenuAction> genActions = new ArrayList<IMenuAction>();
