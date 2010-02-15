@@ -62,6 +62,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>as.cu</artifactId>
         </dependency>
+        <dependency>
+        	<groupId>org.eclipse</groupId>
+        	<artifactId>org.eclipse.equinox.common</artifactId>
+        </dependency>
     </dependencies>
 </project>
 
