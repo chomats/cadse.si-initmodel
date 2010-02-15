@@ -1933,6 +1933,10 @@ public class InitModelImpl {
 				lt.setInverseLinkType(lt);
 			}
 		}
+		if (linkType.getType() != null) {
+			ItemType it = getItemType(false, currentModelType, getUUID(linkType.getType(), false, false), cxt);
+			lt.setType(it);
+		}
 		String managerClassName = linkType.getManagerClass();
 		ILinkTypeManager linkTypeManager = newInstance(cxt.currentCadseName.getQualifiedName(), managerClassName);
 		if (linkTypeManager == null) {
