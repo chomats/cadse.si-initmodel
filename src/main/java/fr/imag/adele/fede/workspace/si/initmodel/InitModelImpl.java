@@ -1010,7 +1010,7 @@ public class InitModelImpl {
 			return null;
 		}
 		
-		return PlatformURLHandler.PROTOCOL+':'+'/'+PlatformURLHandler.BUNDLE+'/'+bundle.getSymbolicName()+"/"+iconFile;
+		return PlatformURLHandler.PROTOCOL+':'+'/'+"plugin"+'/'+bundle.getSymbolicName()+"/"+iconFile;
 
 	}
 
