@@ -48,6 +48,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -118,6 +119,7 @@ import fr.imag.adele.fede.workspace.as.initmodel.jaxb.UpdateKindType;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.ValueTypeType;
 import fr.imag.adele.fede.workspace.si.initmodel.internal.ModelRepository;
 import fr.imag.adele.melusine.as.findmodel.ModelEntry;
+import org.eclipse.core.internal.boot.PlatformURLHandler;
 
 /**
  * @generated
@@ -992,7 +994,10 @@ public class InitModelImpl {
 		if (iconFile == null || iconFile.length() == 0) {
 			return null;
 		}
-
+		if (iconFile.startsWith(PlatformURLHandler.PROTOCOL)) {
+			return iconFile;
+		}
+	
 		String bundleId = cxt.currentCadseName.getQualifiedName();
 		int indexOfpointpoint = iconFile.indexOf(':');
 		if (indexOfpointpoint != -1) {
@@ -1005,7 +1010,7 @@ public class InitModelImpl {
 			return null;
 		}
 		
-		return "platform:/plugin/"+bundle.getSymbolicName()+"/"+iconFile;
+		return PlatformURLHandler.PROTOCOL+':'+'/'+PlatformURLHandler.BUNDLE+'/'+bundle.getSymbolicName()+"/"+iconFile;
 
 	}
 
