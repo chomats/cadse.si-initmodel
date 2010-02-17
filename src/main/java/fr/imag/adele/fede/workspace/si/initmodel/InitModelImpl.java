@@ -86,6 +86,7 @@ import fr.imag.adele.cadse.core.impl.attribute.IntegerAttributeType;
 import fr.imag.adele.cadse.core.impl.attribute.ListAttributeType;
 import fr.imag.adele.cadse.core.impl.attribute.StringAttributeType;
 import fr.imag.adele.cadse.core.impl.attribute.UUIDAttributeType;
+import fr.imag.adele.cadse.core.impl.internal.LinkTypeImpl;
 import fr.imag.adele.cadse.core.impl.internal.LogicalWorkspaceImpl;
 import fr.imag.adele.cadse.core.internal.attribute.IInternalTWAttribute;
 import fr.imag.adele.cadse.core.internal.attribute.IInternalTWLink;
@@ -1996,6 +1997,9 @@ public class InitModelImpl {
 				lt.setInverseLinkType(lt);
 			}
 		}
+		if (linkType.getFlag() != null)
+			lt.setFlag(linkType.getFlag(), true);
+		
 		if (linkType.getType() != null) {
 			ItemType it = getItemType(false, currentModelType, getUUID(linkType.getType(), false, false), cxt);
 			lt.setType(it);
@@ -2018,6 +2022,7 @@ public class InitModelImpl {
 			lt.setIsNatif(true);
 		}
 		lt.setIsStatic(true);
+		
 		return lt;
 	}
 
