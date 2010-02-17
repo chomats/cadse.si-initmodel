@@ -90,6 +90,8 @@ import fr.imag.adele.cadse.core.impl.internal.LogicalWorkspaceImpl;
 import fr.imag.adele.cadse.core.internal.attribute.IInternalTWAttribute;
 import fr.imag.adele.cadse.core.internal.attribute.IInternalTWLink;
 import fr.imag.adele.cadse.core.transaction.LogicalWorkspaceTransaction;
+import fr.imag.adele.cadse.core.transaction.delta.ItemDelta;
+import fr.imag.adele.cadse.core.transaction.delta.LinkDelta;
 import fr.imag.adele.cadse.core.ui.GenericActionContributor;
 import fr.imag.adele.cadse.core.ui.IActionContributor;
 import fr.imag.adele.cadse.core.ui.MenuAction;
@@ -106,6 +108,7 @@ import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CExtBiding;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CExtensionItemType;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItem;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItemType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CLink;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CLinkType;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CMenuAction;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CMetaAttribute;
@@ -525,7 +528,7 @@ public class InitModelImpl {
 			ExtendedType et = getExtendedType(theWorkspaceLogique, getUUID(extit.getId(), true, true), cxt, extit);
 			
 			if (extit.getItemTypeSource() != null) {
-				UUID uuid = getUUID(extit.getItemTypeSource(), false, false);
+				UUID uuid = uuid(extit.getItemTypeSource());
 				ItemType it = cxt.cacheItems.get(uuid);
 				if (it == null) {
 					it = theWorkspaceLogique.getItemType(uuid);
@@ -560,8 +563,8 @@ public class InitModelImpl {
 		}
 		List<CExtBiding> binding = ccadse.getExtBinding();
 		for (CExtBiding cExtBiding : binding) {
-			UUID itUUID = getUUID(cExtBiding.getUuidIt(), false, false);
-			UUID extUUID = getUUID(cExtBiding.getUuidExt(), false, false);
+			UUID itUUID = uuid(cExtBiding.getUuidIt());
+			UUID extUUID = uuid(cExtBiding.getUuidExt());
 			ItemType it = cxt.cacheItems.get(itUUID);
 			if (it == null) {
 				it = theWorkspaceLogique.getItemType(itUUID);
@@ -583,6 +586,9 @@ public class InitModelImpl {
 			} 
 			theWorkspaceLogique.addBinding(cadse, it, et);
 		}
+		
+		
+		
 		if (cxt.loadclass) {
 			load(cxt, cstClass);
 		}
@@ -597,6 +603,40 @@ public class InitModelImpl {
 				}
 			}
 		}
+		
+		try {
+			LogicalWorkspaceTransaction t = theWorkspaceLogique.createTransaction();
+			
+			for(CItem item : ccadse.getItem()) {
+				UUID idType = uuid(item.getType());
+				UUID idItem = uuid(item.getId());
+				ItemType it = t.getItemType(idType);
+				if (it == null) {
+					final String errorMsg = "Cannot find item type " + idType;
+					_logger.log(Level.SEVERE, errorMsg);
+					continue;
+				}
+				ItemDelta loadedItem = t.loadItem(idItem, it);
+				loadedItem.setLoaded(true);
+				
+				loadAttributes(t, item, loadedItem);
+				loadedItem.finishLoad();
+			}
+			for (CItemType it : ccadse.getItemType()) {
+				ItemDelta itDelta = t.getItem(uuid(it.getId()));
+				loadAttributes(t, it, itDelta);
+				loadLinks(t, it, itDelta);
+				for(CLinkType lt : it.getOutgoingLink()) {
+					ItemDelta ltDelta = t.getItem(uuid(lt.getId()));
+					loadAttributes(t, lt, ltDelta);
+					loadLinks(t, lt, ltDelta);
+				}
+			}
+			t.commit();
+		} catch (Throwable e1) {
+			_logger.log(Level.SEVERE, "", e1);
+		}
+		
 		for (ItemType it : cxt.cacheItems.values()) {
 			try {
 				IItemManager itemManager = it.getItemManager();
@@ -615,6 +655,29 @@ public class InitModelImpl {
 		_logger.finest("load cadse " + ccadse.getName() + " in " + (System.currentTimeMillis() - start) + " ms");
 
 		return cxt.currentCadseName;
+	}
+
+	private void loadAttributes(LogicalWorkspaceTransaction t, CItem item,
+			ItemDelta loadedItem) throws CadseException {
+		for (CValuesType value : item.getAttributesValue()) {
+			IAttributeType<?> att = (IAttributeType<?>) t.getBaseItem(uuid(value.getId()));
+			loadedItem.setAttribute(att, value.getValue(), true);
+		}
+	}
+	
+	private void loadLinks(LogicalWorkspaceTransaction t, CItem item,
+			ItemDelta loadedItem) throws CadseException {
+		for (CLink value : item.getLink()) {
+			LinkType att = (LinkType) t.getBaseItem(uuid(value.getType()));
+			Item dest = t.getItem(uuid(value.getDestinationId()));
+			LinkDelta l = loadedItem.createLink(att, dest);
+			l.setReadOnly(value.isIsReadonly());
+			l.setHidden(value.isIsHidden());
+		}
+	}
+
+	private UUID uuid(String id) {
+		return getUUID(id, false, false);
 	}
 
 	/**
@@ -824,7 +887,7 @@ public class InitModelImpl {
 		if (name == null || name.length() == 0) {
 			return null;
 		}
-		UUID uuid = getUUID(name, false, false);
+		UUID uuid = uuid(name);
 		return getItemType(false, currentModelType, uuid, cxt);
 	}
 
@@ -1901,7 +1964,7 @@ public class InitModelImpl {
 		}
 
 		String inverse = linkType.getInverseLink();
-		UUID uuid = getUUID(linkType.getDestination(), false, false);
+		UUID uuid = uuid(linkType.getDestination());
 		TypeDefinition destType = currentModelType.getItemType(uuid);
 		if (destType == null) {
 			_logger.log(Level.SEVERE, "Cannot find item type " + linkType.getDestination());
