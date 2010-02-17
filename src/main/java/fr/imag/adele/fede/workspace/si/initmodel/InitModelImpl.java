@@ -619,6 +619,8 @@ public class InitModelImpl {
 				}
 				ItemDelta loadedItem = t.loadItem(idItem, it);
 				loadedItem.setLoaded(true);
+				loadedItem.setIsRuntime(true);
+				loadedItem.setCadse(cxt.currentCadseName);
 				
 				loadAttributes(t, item, loadedItem);
 				loadedItem.finishLoad();
