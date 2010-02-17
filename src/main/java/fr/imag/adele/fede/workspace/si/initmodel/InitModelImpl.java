@@ -321,7 +321,7 @@ public class InitModelImpl {
 
 		CadseRuntime newCadseRuntime = theWorkspaceLogique.createCadseRuntime(ccadse.getName(),
 				getUUID(ccadse.getId(), false, false), getUUID(ccadse.getIdCadseDefinition(), false, false));
-		newCadseRuntime.setIsStatic(true);
+		newCadseRuntime.setIsRuntime(true);
 		newCadseRuntime.setFlag(Item.IS_HIDDEN, true);
 		newCadseRuntime.setVersion(ccadse.getVersion());
 		newCadseRuntime.setRequiredCadses(null);
@@ -1209,7 +1209,7 @@ public class InitModelImpl {
 		it = theWorkspaceLogique.createExtendedType(metaType, cxt.currentCadseName, getUUID(cit
 				.getId(), true, true), cit.getQualifiedName(), cit.getName());
 		
-		it.setIsStatic(true);
+		it.setIsRuntime(true);
 		it.setPackageName(cit.getPackageName());
 
 		return it;
@@ -1256,7 +1256,7 @@ public class InitModelImpl {
 			it.setItemFactory(factory);
 		}
 		it.setRootElement(cit.isIsRootElement());
-		it.setIsStatic(true);
+		it.setIsRuntime(true);
 		it.setPackageName(cit.getPackageName());
 
 		it_manager.setItemType(it);
@@ -1275,7 +1275,7 @@ public class InitModelImpl {
 			Item loadedItem = loadItem(theWorkspaceLogique, item);
 			if (loadedItem != null && loadedItem instanceof IAttributeType) {
 				IAttributeType<? extends Object> att = (IAttributeType<? extends Object>) loadedItem;
-				att.setIsStatic(true);
+				att.setIsRuntime(true);
 				it.addAttributeType(att);
 			}
 		}
@@ -1305,7 +1305,7 @@ public class InitModelImpl {
 			try {
 				IAttributeType<? extends Object> att = convertToAttributeType(attType, it, cxt.currentCadseName
 						.getQualifiedName());
-				att.setIsStatic(true);
+				att.setIsRuntime(true);
 				initEvol(att, attType);
 				it.addAttributeType(att);
 				String cstName = attType.getCstName();
@@ -1323,7 +1323,7 @@ public class InitModelImpl {
 			try {
 				IAttributeType<? extends Object> att = createAttrituteType(theWorkspaceLogique, it, vt,
 						cxt.currentCadseName.getQualifiedName());
-				att.setIsStatic(true);
+				att.setIsRuntime(true);
 				initEvol(att, vt);
 				it.addAttributeType(att);
 				String cstName = vt.getCstName();
@@ -2021,7 +2021,7 @@ public class InitModelImpl {
 		if (Boolean.TRUE.equals(linkType.isIsNatif())) {
 			lt.setIsNatif(true);
 		}
-		lt.setIsStatic(true);
+		lt.setIsRuntime(true);
 		
 		return lt;
 	}
