@@ -603,11 +603,10 @@ public class InitModelImpl {
 					}
 				}
 			}
-			for (Link l : cxt.currentCadseName.getOutgoingLinks()) {
-				l.getDestination().addIncomingLink(l, false);
-			}
 		}
-		
+		for (Link l : cxt.currentCadseName.getOutgoingLinks()) {
+			l.getDestination().addIncomingLink(l, false);
+		}
 		try {
 			LogicalWorkspaceTransaction t = theWorkspaceLogique.createTransaction();
 			
