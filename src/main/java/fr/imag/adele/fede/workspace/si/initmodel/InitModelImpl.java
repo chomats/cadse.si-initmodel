@@ -156,13 +156,13 @@ public class InitModelImpl {
 		Map<UUID, CItemType>	itemTypes;
 
 		/** The cache items. */
-		Map<UUID, ItemType>	cacheItems;
+		Map<UUID, TypeDefinition>	cacheItems;
 
 		/** The values_to_field. */
 		Map<String, Object>			values_to_field;
 
 		/** The init link. */
-		ArrayList<ItemType>			initLink;
+		ArrayList<TypeDefinition>	initLink;
 
 		/** The loadclass. */
 		public boolean				loadclass;
@@ -185,9 +185,9 @@ public class InitModelImpl {
 		}
 
 		public void reset() {
-			cacheItems = new HashMap<UUID, ItemType>();
+			cacheItems = new HashMap<UUID, TypeDefinition>();
 			values_to_field = new HashMap<String, Object>();
-			initLink = new ArrayList<ItemType>();
+			initLink = new ArrayList<TypeDefinition>();
 		}
 	}
 
@@ -491,7 +491,7 @@ public class InitModelImpl {
 
 		
 		//
-		for (ItemType source : cxt.initLink) {
+		for (TypeDefinition source : cxt.initLink) {
 			CItemType cit = cxt.itemTypes.get(source.getId());
 			
 			loadAttributesDefinition(theWorkspaceLogique, cit, cxt, source);
@@ -527,10 +527,10 @@ public class InitModelImpl {
 		List<CExtensionItemType> extItemTypes = ccadse.getExtItemType();
 		for (CExtensionItemType extit : extItemTypes) {
 			ExtendedType et = getExtendedType(theWorkspaceLogique, getUUID(extit.getId(), true, true), cxt, extit);
-			
+			cxt.cacheItems.put(et.getId(), et);
 			if (extit.getItemTypeSource() != null) {
 				UUID uuid = uuid(extit.getItemTypeSource());
-				ItemType it = cxt.cacheItems.get(uuid);
+				ItemType it = (ItemType) cxt.cacheItems.get(uuid);
 				if (it == null) {
 					it = theWorkspaceLogique.getItemType(uuid);
 				}
@@ -566,7 +566,7 @@ public class InitModelImpl {
 		for (CExtBiding cExtBiding : binding) {
 			UUID itUUID = uuid(cExtBiding.getUuidIt());
 			UUID extUUID = uuid(cExtBiding.getUuidExt());
-			ItemType it = cxt.cacheItems.get(itUUID);
+			ItemType it = (ItemType) cxt.cacheItems.get(itUUID);
 			if (it == null) {
 				it = theWorkspaceLogique.getItemType(itUUID);
 			}
@@ -578,7 +578,7 @@ public class InitModelImpl {
 			} else {
 				
 			}
-			ExtendedType et =  theWorkspaceLogique.getExtendedType(extUUID);
+			ExtendedType et =  (ExtendedType) cxt.cacheItems.get(extUUID);
 			if (it == null) {
 				final String errorMsg = "Cannot load the binding for the ext type " + cExtBiding.getUuidExt();
 				_logger.log(Level.SEVERE, errorMsg);
@@ -595,13 +595,16 @@ public class InitModelImpl {
 		}
 
 		if (root) {
-			for (ItemType it : cxt.cacheItems.values()) {
+			for (TypeDefinition it : cxt.cacheItems.values()) {
 				List<? extends Link> links = it.getOutgoingLinks();
 				for (Link l : links) {
 					if (l.getDestination() instanceof IAttributeType) {
 						l.getDestination().addIncomingLink(l, false);
 					}
 				}
+			}
+			for (Link l : cxt.currentCadseName.getOutgoingLinks()) {
+				l.getDestination().addIncomingLink(l, false);
 			}
 		}
 		
@@ -640,7 +643,9 @@ public class InitModelImpl {
 			_logger.log(Level.SEVERE, "", e1);
 		}
 		
-		for (ItemType it : cxt.cacheItems.values()) {
+		for (TypeDefinition it : cxt.cacheItems.values()) {
+			if (!it.isMainType())
+				continue;
 			try {
 				IItemManager itemManager = it.getItemManager();
 				if (itemManager instanceof InitAction)
@@ -909,7 +914,7 @@ public class InitModelImpl {
 	 */
 	private ItemType getItemType(boolean nosuper, LogicalWorkspace theWorkspaceLogique, UUID itemTypeId,
 			InitContext cxt) throws CadseException {
-		ItemType it = cxt.cacheItems.get(itemTypeId);
+		ItemType it = (ItemType) cxt.cacheItems.get(itemTypeId);
 		if (it != null) {
 			return it;
 		}
