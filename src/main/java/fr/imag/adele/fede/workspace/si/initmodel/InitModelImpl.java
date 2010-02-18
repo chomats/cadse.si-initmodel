@@ -239,6 +239,10 @@ public class InitModelImpl {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
+			} catch (CadseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
 			}
 		}
 
@@ -247,6 +251,9 @@ public class InitModelImpl {
 				load(false, theWorkspaceLogique, new ModelRepository(c), c.getName(), theCadsesLoadedList,
 						theCadsesLoadedListRef);
 			} catch (ErrorWhenLoadedModel e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CadseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -297,15 +304,13 @@ public class InitModelImpl {
 	 *            the the cadses loaded list
 	 * 
 	 * @return the int
-	 * 
-	 * @throws ErrorWhenLoadedModel
-	 *             the error when loaded model
+	 * @throws CadseException 
 	 * 
 	 * @see fede.workspace.role.initmodel.IInitModel#init(java.lang.String)
 	 */
 	private CadseRuntime load(boolean root, LogicalWorkspace theWorkspaceLogique, ModelRepository repository,
 			String cadseName, Map<String, CadseRuntime> theCadsesLoadedList, HashMap<CadseRuntime, List<CCadseRef>> ref)
-			throws ErrorWhenLoadedModel {
+			throws CadseException {
 
 		CadseRuntime findCadse = theCadsesLoadedList.get(cadseName);
 		if (findCadse != null) {
