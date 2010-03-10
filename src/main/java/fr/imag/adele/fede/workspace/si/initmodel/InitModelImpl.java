@@ -1908,10 +1908,10 @@ public class InitModelImpl {
 
 	public int getFlag(CValuesType type) {
 		if (type.getFlag() != null) {
-			return type.getFlag().intValue() | (type.getMin() == 1 ? Item.MUST_BE_INITIALIZED_AT_CREATION_TIME : 0);
+			return type.getFlag().intValue() | (type.getMin() == 1 ? Item.SHOW_IN_DEFAULT_CP : 0);
 		}
 
-		return type.getMin() == 1 ? Item.MUST_BE_INITIALIZED_AT_CREATION_TIME : 0 + Item.DEFAULT_FLAG;
+		return type.getMin() == 1 ? Item.SHOW_IN_DEFAULT_CP : 0 + Item.DEFAULT_FLAG;
 	}
 
 	private int findIntegerValue(CValuesType item, String key, int defaultvalue) {
