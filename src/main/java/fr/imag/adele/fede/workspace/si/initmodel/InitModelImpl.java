@@ -1962,7 +1962,7 @@ public class InitModelImpl {
 		LinkType inverselt = null;
 		if (inverse != null && inverse.length() > 0) {
 			inverselt = destType.getOutgoingLinkType(inverse);
-			if (inverselt != null && inverselt.getSource() != destType) {
+			if (inverselt != null && !isLinkTypeCompatible(inverselt.getSource(),destType)) {
 				// inverse not in super type...
 				inverselt = null;
 			}
@@ -2014,6 +2014,12 @@ public class InitModelImpl {
 	}
 
 	
+
+	private boolean isLinkTypeCompatible(TypeDefinition source,
+			TypeDefinition destType) {
+		//FIXME : implements
+		return true;
+	}
 
 	/**
 	 * Load from file.
