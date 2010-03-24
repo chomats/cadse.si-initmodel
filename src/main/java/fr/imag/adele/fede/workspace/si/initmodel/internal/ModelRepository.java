@@ -38,6 +38,7 @@ import fr.imag.adele.cadse.util.Nullable;
 import fr.imag.adele.fede.workspace.as.initmodel.ErrorWhenLoadedModel;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CCadse;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CItemType;
+import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CTypeDefinition;
 import fr.imag.adele.fede.workspace.si.initmodel.InitModel;
 import fr.imag.adele.fede.workspace.si.initmodel.InitModelImpl;
 import fr.imag.adele.melusine.as.findmodel.CheckModel;
@@ -254,8 +255,8 @@ public class ModelRepository  {
 	 * 
 	 * @return the item type
 	 */
-	public Map<UUID, CItemType> getItemType() {
-		return new HashMap<UUID, CItemType>(this.typeMap);
+	public Map<UUID, CTypeDefinition> getItemType() {
+		return new HashMap<UUID, CTypeDefinition>(this.typeMap);
 	}
 
 //	/**
