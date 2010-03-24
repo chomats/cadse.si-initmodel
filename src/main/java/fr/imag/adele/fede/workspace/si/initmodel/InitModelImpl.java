@@ -153,7 +153,7 @@ public class InitModelImpl {
 	class InitContext {
 
 		/** The item types. */
-		Map<UUID, CItemType>	itemTypes;
+		Map<UUID, CTypeDefinition>	itemTypes;
 
 		/** The cache items. */
 		Map<UUID, TypeDefinition>	cacheItems;
@@ -436,7 +436,7 @@ public class InitModelImpl {
 			getItemType(true, theWorkspaceLogique, CadseDomain.ITEM_ID, cxt);
 			_logger.info("Load item type");
 			
-			CItemType cit = cxt.itemTypes.get(CadseCore.theItemType.getId());
+			CItemType cit = (CItemType) cxt.itemTypes.get(CadseCore.theItemType.getId());
 			if (cit != null) {
 				List<CLinkType> links = cit.getOutgoingLink();
 				for (CLinkType link : links) {
@@ -463,7 +463,7 @@ public class InitModelImpl {
 			
 			
 			ItemType absIt = CadseCore.theItemType.getSuperType();
-			CItemType absCIT = cxt.itemTypes.get(absIt.getId());
+			CItemType absCIT = (CItemType) cxt.itemTypes.get(absIt.getId());
 			
 			List<CLinkType> links = absCIT.getOutgoingLink();
 			for (CLinkType link : links) {
@@ -490,45 +490,13 @@ public class InitModelImpl {
 			//EXT_ITEM_TYPE
 			CadseGCST.EXT_ITEM_TYPE = getItemType(false, theWorkspaceLogique, extID, cxt);
 		}
-		for (CItemType cit : cxt.itemTypes.values()) {
+		
+		// Load the type (not link and attributes)
+		for (CTypeDefinition cit : cxt.itemTypes.values()) {
 			getItemType(false, theWorkspaceLogique, getUUID(cit.getId(), false, false), cxt);
 		}
 
-		
-		//
-		for (TypeDefinition source : cxt.initLink) {
-			CItemType cit = cxt.itemTypes.get(source.getId());
-			
-			loadAttributesDefinition(theWorkspaceLogique, cit, cxt, source);
-			loadPageAndAction(cxt, source, cit);
-			
-			List<CLinkType> links = cit.getOutgoingLink();
-			for (CLinkType link : links) {
-				if (!(link instanceof CLinkType)) {
-					continue;
-				}
-
-				CLinkType linkType = link;
-				if (linkType == rootMLT) {
-					continue;
-				}
-				
-				if (linkType == absAttributeType) {
-					continue;
-				}
-				
-				try {
-					createLinkType(theWorkspaceLogique, source, linkType, cxt);
-				} catch (CadseException e) {
-					_logger.log(Level.SEVERE, "Cannot create link type " + link.getCstName(), e);
-					cadse.addError("Cannot create link type " + link.getCstName() + " : " + e.getMessage());
-				} catch (CadseIllegalArgumentException e) {
-					_logger.log(Level.SEVERE, "Cannot create link type " + link.getCstName(), e);
-					cadse.addError("Cannot create link type " + link.getCstName() + " : " + e.getMessage());
-				}
-			}
-		}
-
+		// Load extensions and try to bind.
 		List<CExtensionItemType> extItemTypes = ccadse.getExtItemType();
 		for (CExtensionItemType extit : extItemTypes) {
 			ExtendedType et = getExtendedType(theWorkspaceLogique, getUUID(extit.getId(), true, true), cxt, extit);
@@ -547,26 +515,9 @@ public class InitModelImpl {
 					theWorkspaceLogique.addBinding(cadse, it, et);
 				}
 			}
-			loadAttributesDefinition2(theWorkspaceLogique, extit, cxt, et);
-			loadPageAndAction(cxt, et, extit);
-			List<CLinkType> links = extit.getOutgoingLink();
-			for (CLinkType link : links) {
-				if (!(link instanceof CLinkType)) {
-					continue;
-				}
-
-				CLinkType linkType = link;
-				try {
-					createLinkType(theWorkspaceLogique, et, linkType, cxt);
-				} catch (CadseException e) {
-					_logger.log(Level.SEVERE, "Cannot create link type " + link.getCstName(), e);
-					cadse.addError("Cannot create link type " + link.getCstName() + " : " + e.getMessage());
-				} catch (CadseIllegalArgumentException e) {
-					_logger.log(Level.SEVERE, "Cannot create link type " + link.getCstName(), e);
-					cadse.addError("Cannot create link type " + link.getCstName() + " : " + e.getMessage());
-				}
-			}
 		}
+		
+		// Try to bind.
 		List<CExtBiding> binding = ccadse.getExtBinding();
 		for (CExtBiding cExtBiding : binding) {
 			UUID itUUID = uuid(cExtBiding.getUuidIt());
@@ -593,7 +544,30 @@ public class InitModelImpl {
 			theWorkspaceLogique.addBinding(cadse, it, et);
 		}
 		
-		
+		// Load attribute, link type, action
+		for (TypeDefinition source : cxt.initLink) {
+			CTypeDefinition cit = cxt.itemTypes.get(source.getId());
+			
+			loadAttributesDefinition(theWorkspaceLogique, cit, cxt, source);
+			loadPageAndAction(cxt, source, cit);
+			
+			List<CLinkType> links = cit.getOutgoingLink();
+			for (CLinkType linkType : links) {
+				if (linkType == rootMLT || linkType == absAttributeType) {
+					continue;
+				}
+				
+				try {
+					createLinkType(theWorkspaceLogique, source, linkType, cxt);
+				} catch (CadseException e) {
+					_logger.log(Level.SEVERE, "Cannot create link type " + linkType.getCstName(), e);
+					cadse.addError("Cannot create link type " + linkType.getCstName() + " : " + e.getMessage());
+				} catch (CadseIllegalArgumentException e) {
+					_logger.log(Level.SEVERE, "Cannot create link type " + linkType.getCstName(), e);
+					cadse.addError("Cannot create link type " + linkType.getCstName() + " : " + e.getMessage());
+				}
+			}
+		}
 		
 		if (cxt.loadclass) {
 			load(cxt, cstClass);
@@ -930,7 +904,7 @@ public class InitModelImpl {
 		} catch (Throwable e) {
 			_logger.log(Level.SEVERE, "Cannot find item type.", e); //$NON-NLS-1$
 		}
-		CItemType cit = cxt.itemTypes.get(itemTypeId);
+		CItemType cit = (CItemType) cxt.itemTypes.get(itemTypeId);
 		if (cit == null) {
 			throw new CadseException("Cannot found item "+itemTypeId);
 		}
@@ -966,21 +940,23 @@ public class InitModelImpl {
 	private ExtendedType getExtendedType(LogicalWorkspace theWorkspaceLogique, UUID itemTypeId,
 			InitContext cxt, CExtensionItemType cit) throws CadseException {
 		ExtendedType it = null;
-		
-		
+				
 		it = createExtendedType(theWorkspaceLogique, cit, cxt);
+		cxt.initLink.add(it);
+		cxt.cacheItems.put(it.getId(), it);
+		cxt.itemTypes.put(it.getId(), cit);
 		String cstName = cit.getCstName();
 		if (cxt.loadclass && cstName != null) {
 			it.setCSTName(cstName);
 			cxt.values_to_field.put(cstName, it);
-		}	
+		}
 		
 		return it;
 	}
 	
 	private void setSuperTypeAfter(LogicalWorkspace theWorkspaceLogique, ItemType it,
 			InitContext cxt) throws CadseException {
-		CItemType cit = cxt.itemTypes.get(it.getId());
+		CItemType cit = (CItemType) cxt.itemTypes.get(it.getId());
 		ItemType super_it = getSuperType(theWorkspaceLogique, cit, cxt);
 		it.setSuperType(super_it);
 	}
@@ -1280,7 +1256,7 @@ public class InitModelImpl {
 		return it;
 	}
 
-	private void loadAttributesDefinition(LogicalWorkspace theWorkspaceLogique, CItemType cit, InitContext cxt, TypeDefinition it) {
+	private void loadAttributesDefinition(LogicalWorkspace theWorkspaceLogique, CTypeDefinition cit, InitContext cxt, TypeDefinition it) {
 		loadAttributesDefinition2(theWorkspaceLogique, cit, cxt, it);
 		for (CItem item : cit.getAttributeDefinition()) {
 			Item loadedItem = loadItem(theWorkspaceLogique, item);
