@@ -1953,7 +1953,7 @@ public class InitModelImpl {
 
 		String inverse = linkType.getInverseLink();
 		UUID uuid = uuid(linkType.getDestination());
-		TypeDefinition destType = currentModelType.getItemType(uuid);
+		TypeDefinition destType = currentModelType.getTypeDefinition(uuid);
 		if (destType == null) {
 			_logger.log(Level.SEVERE, "Cannot find item type " + linkType.getDestination());
 			throw new CadseException("Cannot find the item type {0}.", linkType.getDestination());
