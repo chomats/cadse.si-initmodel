@@ -57,6 +57,7 @@ import fr.imag.adele.cadse.core.CadseException;
 import fr.imag.adele.cadse.core.CadseGCST;
 import fr.imag.adele.cadse.core.CadseIllegalArgumentException;
 import fr.imag.adele.cadse.core.CadseRuntime;
+import fr.imag.adele.cadse.core.ChangeID;
 import fr.imag.adele.cadse.core.DefaultItemManager;
 import fr.imag.adele.cadse.core.ExtendedType;
 import fr.imag.adele.cadse.core.IItemFactory;
@@ -396,6 +397,8 @@ public class InitModelImpl {
 				load(cxt, cadseRuntime, theWorkspaceLogique);
 			}
 		}
+		try {
+		cadse.getCadseDomain().beginOperation("Execute cadse");
 		boolean root = cadse.isCadseRoot();
 
 		ModelRepository repository = ModelRepository.findModelFile(_initModel, cadse.getQualifiedName());
@@ -636,9 +639,15 @@ public class InitModelImpl {
 		}
 
 		cxt.currentCadseName.setExecuted(true);
+		cadse.getCadseDomain().notifieChangeEvent(ChangeID.SET_ATTRIBUTE, cxt.currentCadseName, CadseGCST.CADSE_at_EXECUTED_, false, true);
+		_logger.finest("load cadse " + ccadse.getName() + " in " + (System.currentTimeMillis() - start) + " ms");
+		} finally {
+			cadse.getCadseDomain().endOperation();
+			
+		}
 		cxt.executedNumber++;
 
-		_logger.finest("load cadse " + ccadse.getName() + " in " + (System.currentTimeMillis() - start) + " ms");
+		
 
 		return cxt.currentCadseName;
 	}
