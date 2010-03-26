@@ -643,11 +643,8 @@ public class InitModelImpl {
 		_logger.finest("load cadse " + ccadse.getName() + " in " + (System.currentTimeMillis() - start) + " ms");
 		} finally {
 			cadse.getCadseDomain().endOperation();
-			
 		}
 		cxt.executedNumber++;
-
-		
 
 		return cxt.currentCadseName;
 	}
