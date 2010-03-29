@@ -414,6 +414,10 @@ public class InitModelImpl {
 		cxt.loadclass = cstClass != null;
 		cadse.setCstQualifiedClassName(cstClass);
 		cxt.bundle = _initModel.getPlatformService().findBundle(cxt.currentCadseName.getQualifiedName());
+		if (cxt.bundle == null) {
+			throw new ErrorWhenLoadedModel("Cannot find resovled bundle "+cxt.currentCadseName.getQualifiedName());
+			
+		}
 		if (cxt.bundle != null) {
 			try {
 				cxt.bundle.start();
