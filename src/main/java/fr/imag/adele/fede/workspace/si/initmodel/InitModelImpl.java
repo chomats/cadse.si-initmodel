@@ -98,7 +98,7 @@ import fr.imag.adele.cadse.core.ui.GenericActionContributor;
 import fr.imag.adele.cadse.core.ui.IActionContributor;
 import fr.imag.adele.cadse.core.ui.MenuAction;
 import fr.imag.adele.cadse.core.util.Convert;
-import fr.imag.adele.cadse.workspace.as.loadfactory.ILoadFactory;
+import fr.imag.adele.cadse.workspace.as.loadservice.ILoadFactory;
 import fr.imag.adele.fede.workspace.as.initmodel.ErrorWhenLoadedModel;
 import fr.imag.adele.fede.workspace.as.initmodel.InitModelLoadAndWrite;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAction;

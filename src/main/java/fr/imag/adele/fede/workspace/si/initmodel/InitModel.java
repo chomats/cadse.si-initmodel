@@ -15,7 +15,7 @@ import fr.imag.adele.cadse.core.ItemType;
 import fr.imag.adele.cadse.core.LogicalWorkspace;
 import fr.imag.adele.cadse.core.attribute.IAttributeType;
 import fr.imag.adele.cadse.workspace.as.classreferencer.IClassReferencer;
-import fr.imag.adele.cadse.workspace.as.loadfactory.ILoadFactory;
+import fr.imag.adele.cadse.workspace.as.loadservice.ILoadFactory;
 import fr.imag.adele.fede.workspace.as.initmodel.ErrorWhenLoadedModel;
 import fr.imag.adele.fede.workspace.as.initmodel.IInitModel;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.CAttType;
