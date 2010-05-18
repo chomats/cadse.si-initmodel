@@ -48,7 +48,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -87,7 +86,6 @@ import fr.imag.adele.cadse.core.impl.attribute.IntegerAttributeType;
 import fr.imag.adele.cadse.core.impl.attribute.ListAttributeType;
 import fr.imag.adele.cadse.core.impl.attribute.StringAttributeType;
 import fr.imag.adele.cadse.core.impl.attribute.UUIDAttributeType;
-import fr.imag.adele.cadse.core.impl.internal.LinkTypeImpl;
 import fr.imag.adele.cadse.core.impl.internal.LogicalWorkspaceImpl;
 import fr.imag.adele.cadse.core.internal.attribute.IInternalTWAttribute;
 import fr.imag.adele.cadse.core.internal.attribute.IInternalTWLink;
@@ -124,13 +122,14 @@ import fr.imag.adele.fede.workspace.as.initmodel.jaxb.UpdateKindType;
 import fr.imag.adele.fede.workspace.as.initmodel.jaxb.ValueTypeType;
 import fr.imag.adele.fede.workspace.si.initmodel.internal.ModelRepository;
 import fr.imag.adele.melusine.as.findmodel.ModelEntry;
-import org.eclipse.core.internal.boot.PlatformURLHandler;
 
 /**
  * @generated
  */
 public class InitModelImpl {
 
+	public static final String PROTOCOL = "platform"; //$NON-NLS-1$
+	
 	/*
 	 * This object is assigned to the value of a field map to indicate that a
 	 * translated message has already been assigned to that field.
@@ -1125,7 +1124,7 @@ public class InitModelImpl {
 		if (iconFile == null || iconFile.length() == 0) {
 			return null;
 		}
-		if (iconFile.startsWith(PlatformURLHandler.PROTOCOL)) {
+		if (iconFile.startsWith(PROTOCOL)) {
 			return iconFile;
 		}
 
@@ -1142,7 +1141,7 @@ public class InitModelImpl {
 			return null;
 		}
 
-		return PlatformURLHandler.PROTOCOL + ':' + '/' + "plugin" + '/'
+		return PROTOCOL + ':' + '/' + "plugin" + '/'
 				+ bundle.getSymbolicName() + "/" + iconFile;
 
 	}
