@@ -31,6 +31,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -690,6 +691,26 @@ public class InitModelImpl {
 					cadse.addError(errorMsg);
 				}
 			}
+			
+			//Load eclipse part
+			Bundle bundleEclipse = _initModel.getPlatformService().findBundle(
+					cxt.currentCadseName.getQualifiedName()+".eclipse");
+			if (bundleEclipse != null){
+				Dictionary dict = bundleEclipse.getHeaders();
+				// Check for abstract factory type
+				String classInit = (String) dict.get("Cadse-Eclispe-Init");
+				if (classInit != null) {
+					InitAction ia;
+					try {
+						ia = (InitAction) bundleEclipse.loadClass(classInit).newInstance();
+						ia.init();
+					} catch (Exception e) {
+						_logger.log(Level.SEVERE, "Cannot load eclipse part for "+cxt.currentCadseName.getName(), e);
+					}
+					
+				}
+			}
+			// end load eclipse part
 
 			cxt.currentCadseName.setExecuted(true);
 			cadse.getCadseDomain().notifieChangeEvent(ChangeID.SET_ATTRIBUTE,
