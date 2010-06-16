@@ -418,7 +418,10 @@ public class InitModelImpl {
 
 			ModelRepository repository = ModelRepository.findModelFile(
 					_initModel, cadse.getQualifiedName());
-
+			if (repository == null) {
+				throw new ErrorWhenLoadedModel("Cannot load model "
+						+ cadse.getQualifiedName());
+			}
 			long start = System.currentTimeMillis();
 
 			CCadse ccadse = repository.loadWorkspaceType(this);
