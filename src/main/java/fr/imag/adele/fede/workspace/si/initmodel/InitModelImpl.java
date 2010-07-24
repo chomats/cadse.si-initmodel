@@ -97,6 +97,7 @@ import fr.imag.adele.cadse.core.ui.GenericActionContributor;
 import fr.imag.adele.cadse.core.ui.IActionContributor;
 import fr.imag.adele.cadse.core.ui.MenuAction;
 import fr.imag.adele.cadse.core.util.Convert;
+import fr.imag.adele.cadse.objectadapter.ObjectAdapter;
 import fr.imag.adele.cadse.workspace.as.loadservice.ILoadFactory;
 import fr.imag.adele.fede.workspace.as.initmodel.ErrorWhenLoadedModel;
 import fr.imag.adele.fede.workspace.as.initmodel.InitModelLoadAndWrite;
@@ -1359,6 +1360,7 @@ public class InitModelImpl {
 				super_it, cit.getIntID(), getUUID(cit.getId(), false, false),
 				cit.getName(), cit.getDisplayName(), cit.isHasContent(), cit
 						.isIsAbstract(), it_manager);
+		loadAdapter(cxt, cit, it);
 		String className = cit.getFactoryClass();
 		if (className != null) {
 			IItemFactory factory = newInstance(cxt.currentCadseName
@@ -1376,7 +1378,16 @@ public class InitModelImpl {
 		}
 		initManager(cxt, cit, it, it_manager);
 
+		
 		return it;
+	}
+
+	protected void loadAdapter(InitContext cxt, CItem cit, Item it) {
+		for (String adapter : cit.getAdapters()) {
+			ObjectAdapter<?> oa = newInstance(cxt.currentCadseName.getQualifiedName(), adapter);
+			if (oa != null)
+				it.addAdapter(oa);
+		}
 	}
 
 	private void loadAttributesDefinition(LogicalWorkspace theWorkspaceLogique,
@@ -1721,8 +1732,8 @@ public class InitModelImpl {
 		}
 
 		if (attributeType != null) {
-			InitModelLoadAndWrite manager = (InitModelLoadAndWrite) attributeType
-					.getItemManager();
+			InitModelLoadAndWrite manager = attributeType
+					.adapt(InitModelLoadAndWrite.class);
 			IAttributeType<?> ret = manager.loadAttributeDefinition(_initModel,
 					theWorkspaceLogique, parent, type, cadseName);
 			if (ret != null) {
