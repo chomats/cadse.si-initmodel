@@ -35,32 +35,39 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>as.initmodel</artifactId>
+    		<groupId>fr.imag.adele.cadse</groupId>
+            	<artifactId>as.initmodel</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>as.findmodel</artifactId>
+    		<groupId>fr.imag.adele.cadse</groupId>
+            	<artifactId>as.findmodel</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>as.loadservice</artifactId>
+    		<groupId>fr.imag.adele.cadse</groupId>
+            	<artifactId>as.loadservice</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>as.classreferencer</artifactId>
+    		<groupId>fr.imag.adele.cadse</groupId>
+            	<artifactId>as.classreferencer</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>as.platformeIDE</artifactId>
+    		<groupId>fr.imag.adele.cadse</groupId>
+            	<artifactId>as.platformeIDE</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>cu.core</artifactId>
+    		<groupId>fr.imag.adele.cadse</groupId>
+            	<artifactId>cu.core</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>as.cu</artifactId>
+    		<groupId>fr.imag.adele.cadse</groupId>
+            	<artifactId>as.cu</artifactId>
+		<version>2.3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
