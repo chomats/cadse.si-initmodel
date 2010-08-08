@@ -680,6 +680,20 @@ public class InitModelImpl {
 			} catch (Throwable e1) {
 				_logger.log(Level.SEVERE, "", e1);
 			}
+			
+			for (String cl : ccadse.getInitClasses()) {
+				try {
+					InitAction ia  = newInstance(cxt.currentCadseName.getQualifiedName(), cl);
+					if (ia != null) {
+						ia.init();
+					}
+				} catch (Throwable e) {
+					final String errorMsg = "Cannot init cadse "
+							+ cxt.currentCadseName.getName()+" : "+cl;
+					_logger.log(Level.SEVERE, errorMsg, e);
+					cadse.addError(errorMsg);
+				}
+			}
 
 			for (TypeDefinition it : cxt.cacheItems.values()) {
 				if (!it.isMainType())
