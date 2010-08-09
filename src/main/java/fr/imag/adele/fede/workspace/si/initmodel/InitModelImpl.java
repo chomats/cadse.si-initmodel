@@ -347,6 +347,8 @@ public class InitModelImpl {
 		newCadseRuntime.setCadseroot(root);
 		newCadseRuntime.setExecuted(false);
 		newCadseRuntime.setDisplayName(ccadse.getDisplayName());
+		
+		setCadseRuntimeCst(newCadseRuntime, ccadse.getCstClass());
 		theCadsesLoadedList.put(cadseName, newCadseRuntime);
 		List<CCadseRef> cadseRef = ccadse.getCadseRef();
 		if (!root) {
@@ -933,6 +935,59 @@ public class InitModelImpl {
 		_logger.finest("set cst " + (System.currentTimeMillis() - start)
 				+ " ms");
 
+	}
+	
+	/**
+	 * Load2.
+	 * 
+	 * @param cxt
+	 *            the cxt
+	 * @param clazzName
+	 *            the clazz name
+	 */
+	private void setCadseRuntimeCst(CadseRuntime cr, String clazzName) {
+
+		if (clazzName == null)
+			return;
+		Class clazz = loadClass(cr.getQualifiedName(),
+				clazzName);
+		if (clazz == null) {
+			return;
+		}
+		
+		try {
+			final Field field = clazz.getField("_CADSE");
+
+			boolean isAccessible = (clazz.getModifiers() & Modifier.PUBLIC) != 0;
+
+			
+			// can only set value of public static non-final fields
+			if ((field.getModifiers() & MOD_MASK) != MOD_EXPECTED) {
+				return;
+			}
+			
+			// Check to see if we are allowed to modify the field. If we
+			// aren't (for instance
+			// if the class is not public) then change the accessible
+			// attribute of the field
+			// before trying to set the value.
+			if (!isAccessible) {
+				field.setAccessible(true);
+			}
+
+			// Set the value into the field. We should never get an
+			// exception here because
+			// we know we have a public static non-final field. If we do get
+			// an exception, silently
+			// log it and continue. This means that the field will (most
+			// likely) be un-initialized and
+			// will fail later in the code and if so then we will see both
+			// the NPE and this error.
+			field.set(null, cr);
+		} catch (Exception e) {
+			_logger.log(Level.SEVERE, "Exception setting field value.", e); //$NON-NLS-1$
+			// e.printStackTrace();
+		}
 	}
 
 	/** The string_to_uuid. */
