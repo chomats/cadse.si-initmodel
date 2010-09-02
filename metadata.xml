@@ -3,11 +3,11 @@
 	<component immediate="false" classname="fr.imag.adele.fede.workspace.si.initmodel.InitModel" factory="fr.imag.adele.fede.workspace.si.initmodel.InitModel" architecture="true">
 		<callback transition="validate" method="start"/>
 		<provides specification="fr.imag.adele.fede.workspace.as.initmodel.IInitModel"/>
-		<requires field="workspaceCU" optional="true" filter="(sam.domain.root=Workspace)"/>
-		<requires field="findModel" optional="false"/>
-		<requires field="loadFactories" optional="false"/>
-		<requires field="classReferencer" optional="false"/>
-		<requires field="platformService" optional="false"/>
+		<requires field="workspaceCU" optional="true" filter="(sam.domain.root=Workspace)" proxy="false" nullable="false"/>
+		<requires field="findModel" optional="false" proxy="false" nullable="false"/>
+		<requires field="loadFactories" optional="false" proxy="false" nullable="false"/>
+		<requires field="classReferencer" optional="false" proxy="false" nullable="false"/>
+		<requires field="platformService" optional="false" proxy="false" nullable="false"/>
 	</component>
 	<instance component="fr.imag.adele.fede.workspace.si.initmodel.InitModel" name="fr.imag.adele.cadse.si.workspace.initmodel.instance"/>
 </ipojo>
