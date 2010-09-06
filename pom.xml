@@ -42,7 +42,7 @@
         <dependency>
     		<groupId>fr.imag.adele.cadse</groupId>
             	<artifactId>as.findmodel</artifactId>
-		<version>2.3.1</version>
+		<version>2.3.2-SNAPSHOT</version>
         </dependency>
         <dependency>
     		<groupId>fr.imag.adele.cadse</groupId>
@@ -52,7 +52,7 @@
         <dependency>
     		<groupId>fr.imag.adele.cadse</groupId>
             	<artifactId>as.classreferencer</artifactId>
-		<version>2.3.1</version>
+		<version>2.3.2-SNAPSHOT</version>
         </dependency>
         <dependency>
     		<groupId>fr.imag.adele.cadse</groupId>
