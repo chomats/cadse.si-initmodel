@@ -15,8 +15,9 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ * 
+ * Copyright (C) 2006-2010 Adele Team/LIG/Grenoble University, France
  */
-
 package fr.imag.adele.fede.workspace.si.initmodel.internal;
 
 import java.io.File;
